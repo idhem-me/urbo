@@ -1,54 +1,76 @@
-# Rivage — prototype 0.4
+# Urbo
 
-Jeu mobile de construction de ville, portable vers Vercel. Ouvrir ce dossier dans Cursor avec Node.js 20+, puis :
+Jeu de gestion de ville pour mobile. React, Vite, Tailwind CSS, composants shadcn/ui et icônes Lucide intégrées au bundle.
+
+## Ouvrir dans Cursor
+
+Installer Node.js LTS 24 (ou au moins 22.12), puis ouvrir le dossier du projet.
 
 ```sh
+npm install
 npm run dev
 ```
 
-Ouvrir http://localhost:3000. Aucune dépendance à installer. Choisir une catégorie puis un bâtiment, toucher une parcelle libre pour démarrer le chantier. Toucher un bâtiment existant pour voir ses effets et lancer une amélioration. La liste des parcelles propose aussi ces actions au clavier.
+Ouvrir **http://localhost:3000**.
 
-## Contenu
+Après une mise à jour du dépôt :
 
-27 bâtiments, 9 catégories, 16 parcelles acquises au départ sur 81 achetables. Les extensions doivent être voisines du territoire, avec un prix qui augmente de 12 % par acquisition. Chaque bâtiment est améliorable sur trois niveaux, avec coût en pièces, bois et pierre. Construction de base : 15 secondes ; améliorations de base : 60 puis 135 secondes. Les grands équipements prennent de 45 à 90 secondes au niveau 1 et davantage aux niveaux suivants. Un chantier simultané initialement, plus un par niveau d’atelier artisanal terminé. Pendant l’amélioration, le bâtiment reste actif à son ancien niveau.
+```sh
+ git pull
+ npm install
+ npm run dev
+```
 
-- Logements : maison, résidence.
-- Administration : mairie, collecte fiscale et tableau des besoins.
-- Secours : pompiers, police, poste ambulancier, hôpital.
-- Énergie : centrale à charbon (combustible nécessaire), solaire.
-- Ressources : carrière (pierre et charbon), scierie, pétrole, agriculture.
-- Industrie : atelier artisanal, petite usine, grande usine.
-- Éducation : école, bureaux avec emplois qualifiés ; l’hôpital demande aussi du personnel qualifié.
-- Loisirs : parc, stade, football, tennis, salle de sport.
-- Commerce : épicerie, boutique avec logements, supermarché avec parking, centre commercial avec parking.
+## Tester sur iPhone
 
-Bois, pierre, charbon, pétrole, alimentation et marchandises sont stockés. Le marché permet d’acheter ou vendre par lots de 10. Les usines consomment des matières et produisent des marchandises vendables. Une pénurie interrompt la production concernée. Tous les bâtiments ont un entretien. Les logements et activités génèrent impôts et recettes selon les règles décrites dans `docs/SYSTEMES.md`.
+1. Connecter ordinateur et iPhone au même Wi-Fi.
+2. Garder `npm run dev` ouvert sur l’ordinateur.
+3. Dans Safari, ouvrir l’adresse **Network** affichée par Vite, par exemple `http://192.168.1.20:3000`.
 
-## Sauvegarde et vérification
+Vite écoute sur le réseau local, port 3000. Si le réseau d’entreprise isole les appareils ou si le pare-feu bloque la connexion, utiliser le site Vercel. Sur le téléphone, `localhost` désigne le téléphone, pas l’ordinateur.
 
-Sauvegarde locale automatique, export JSON, reprise limitée à huit heures. Les sauvegardes v1/v2/v3 sont migrées sans supprimer la ville, avec un stock de départ pour les nouvelles mécaniques. Effacer les données du navigateur efface la partie. L’import JSON n’est pas encore disponible.
+## Jouer
+
+Choisir un bâtiment dans **Construire**, puis toucher une case libre. Toucher un bâtiment pour l’améliorer, ou une case + pour l’acheter. Les menus **Ville** et **Stocks** affichent les services, le budget et le marché. La liste des cases permet aussi de jouer au clavier.
+
+L’interface utilise une palette zinc (blanc, noir, gris). Seules la carte et les alertes rouges utilisent de la couleur. Aucun emoji : les services, ressources, boutons et bâtiments utilisent les mêmes icônes SVG Lucide. Elles sont servies depuis l’application, sans CDN. Les couleurs destructrices restent disponibles dans les variantes shadcn/ui et servent aux erreurs et aux déficits. Il n’y a pas encore d’action de suppression de bâtiment.
+
+## Contenu du prototype
+
+27 bâtiments améliorables jusqu’au niveau 3, 9 catégories, 16 cases acquises au départ sur 81 constructibles. Logements, mairie, pompiers, police, ambulances, hôpital, charbon, solaire, ressources, ateliers, usines, écoles, bureaux, sports et commerces avec logements ou parking.
+
+Le moteur gère emploi, formation, énergie, attractivité, impôts, entretien, ressources et chantiers simultanés. Les bâtiments avancés se débloquent selon la population. Les améliorations exigent de bonnes conditions et coûtent davantage. Les achats de terrain doivent être voisins du territoire et leur prix augmente de 12 % par acquisition. Les capacités et coûts sont expliqués dans `docs/PROGRESSION.md` et `docs/SYSTEMES.md`.
+
+## Vercel
+
+Importer le dépôt GitHub dans Vercel. Configuration fournie dans `vercel.json` :
+
+- Framework : **Vite**.
+- Build : `npm run build`.
+- Sortie : **dist**.
+
+Si le projet Vercel utilisait auparavant `public` comme dossier de sortie, retirer ce réglage ou le remplacer par `dist` dans les paramètres du projet. Aucun secret requis pour cette version.
+
+## Sauvegarde et comptes
+
+Sauvegarde locale automatique et export JSON ; reprise limitée à huit heures. Les anciennes parties sont migrées. Effacer les données du navigateur supprime la partie. L’import JSON reste à réaliser.
+
+**La connexion Google et la sauvegarde Supabase ne sont pas encore intégrées.** La migration SQL de départ figure dans `supabase/001_saves.sql`. Le jeu reste une simulation cliente, sans autorité serveur.
+
+## Organisation
+
+- `src/App.jsx` : interface React.
+- `src/components/ui/` : composants shadcn/ui adaptés, source locale.
+- `src/style.css` : thème neutre et styles.
+- `src/icons.js` : icônes Lucide, SVG et rendu Canvas.
+- `src/game.js` : interactions et rendu de la ville.
+- `src/engine.js` : règles économiques et sauvegarde.
+
+## Vérifier
 
 ```sh
 npm test
 npm run build
 ```
 
-Les tests couvrent catalogue, chantiers, trois niveaux pour chaque type, ressources, énergie, emplois qualifiés, couverture des services, budget et migration. Le rendu et l’ergonomie restent à tester sur iPhone/Android.
-
-## Vercel et comptes
-
-Importer le dossier dans GitHub puis dans Vercel. Framework « Other », build `npm run build`, sortie `public` ; `vercel.json` fournit ces réglages. Aucun secret requis dans cette version. Aucun déploiement n’a été effectué.
-
-La connexion Google et la sauvegarde cloud restent à brancher. Un premier schéma Supabase figure dans `supabase/001_saves.sql`. Le jeu utilise actuellement une interface statique et Canvas sans dépendances ; les règles sont séparées dans `public/engine.js` pour permettre une évolution vers Next.js.
-
-## Limites du prototype
-
-Les services ont une couverture globale, sans véhicules, trajets, incidents ni rayon géographique. Population, formation et emploi se rééquilibrent immédiatement. Énergie et pollution sont calculées à l’échelle de la ville. Pas de conduite électrique, réseau routier modifiable, salaire individuel, dette, démolition ou remboursement. Les bâtiments occupent tous une parcelle ; les parkings sont intégrés au visuel des commerces. Les visuels sont des formes vectorielles provisoires. L’économie locale est modifiable par le joueur, sans autorité serveur.
-
-## Progression et territoire (v0.4)
-
-Début rapide grâce à 1 200 pièces et un stock de ressources. Paliers à 12, 30, 60 et 100 habitants (record conservé). Les grands bâtiments se débloquent progressivement ; les niveaux 2 et 3 exigent des conditions actuelles de ville, affichées dans le panneau d’amélioration. Répéter le même bâtiment coûte de plus en plus cher, tandis que les niveaux supérieurs augmentent les charges plus vite que les capacités.
-
-Touchez une case grise marquée + pour afficher son prix, puis confirmez avec « Acheter cette parcelle ». L’achat ne lance aucune construction. Les routes fixes sont traversables pour déterminer le voisinage. Le prix initial est de 50 pièces, multiplié par 1,12 à chaque extension, arrondi à l’entier supérieur. Aucune expansion automatique.
-
-Les sauvegardes précédentes gardent tous leurs bâtiments et leurs chantiers : leurs parcelles sont acquises gratuitement pendant la migration. Aucun revenu hors ligne n’est recalculé rétroactivement sous les nouvelles règles. Voir `docs/PROGRESSION.md` pour les formules et les limites de l’équilibrage.
+Le rendu sur iPhone et Android reste à vérifier sur appareil réel. Les services ont une couverture globale, sans trajet ni intervention animée. La population se rééquilibre immédiatement. Il n’y a pas encore de démolition, remboursement, réseau routier modifiable ou synchronisation entre appareils.

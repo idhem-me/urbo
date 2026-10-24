@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {initial,stats,build,accrue,restore,upgrade,setTax,TYPES,trade,validPlot,owns,startingLand,landPrice,buyLand,adjacentLand,requirements,projectCost,projectDuration,progression} from './public/engine.js';
+import {initial,stats,build,accrue,restore,upgrade,setTax,TYPES,trade,validPlot,owns,startingLand,landPrice,buyLand,adjacentLand,requirements,projectCost,projectDuration,progression} from './src/engine.js';
 let checks=0;function check(name,fn){fn();checks++;console.log('OK',name);}
 function rich(){const s=initial(0);s.money=1e8;s.resources.timber=1e5;s.resources.stone=1e5;s.resources.food=1e5;s.resources.coal=1e5;return s;}
 function healthy(){const s=rich();s.owned=[];for(let y=0;y<11;y++)for(let x=0;x<11;x++)if(validPlot(x,y))s.owned.push(`${x},${y}`);const types=['tower','tower','tower','park','park','park','solar','solar','townhall','fire','police','hospital','school','shop','farm'];s.buildings=types.map((type,i)=>{const [x,y]=s.owned[i].split(',').map(Number);return {type,x,y,level:3};});s.peakPeople=200;return s;}
