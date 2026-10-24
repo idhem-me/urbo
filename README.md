@@ -29,6 +29,22 @@ Après une mise à jour du dépôt :
 
 Vite écoute sur le réseau local, port 3000. Si le réseau d’entreprise isole les appareils ou si le pare-feu bloque la connexion, utiliser le site Vercel. Sur le téléphone, `localhost` désigne le téléphone, pas l’ordinateur.
 
+## Interface mobile (v0.6)
+
+La carte remplit l’écran. Budget, habitants et solde/min apparaissent dans trois badges avec icônes, en haut à gauche. Quatre jauges indiquent la demande en logements, industrie, bureaux et services. Elles vont de 0 à 100 et suivent les besoins actuels ; ce ne sont pas des prévisions garanties.
+
+Les boutons du bas ouvrent Construire, Ville et Stocks. Chaque panneau s’ouvre depuis le bas, avec une croix pour fermer et une zone de contenu défilante verticalement. Les neuf catégories de construction sont en grille, sans défilement horizontal. Choisir un bâtiment ferme le panneau pour le placer sur la carte. Le bouton X à côté du nom annule le placement.
+
+Touchez un bâtiment pour l’améliorer ou le détruire. La destruction demande une confirmation, ne rembourse rien et garde le terrain acquis. Elle est bloquée pendant une amélioration. Déplacer le doigt fait glisser la carte ; pincer permet de zoomer.
+
+## Monnaie et stocks
+
+La base monétaire est l’euro, pas une pièce fictive. Les compteurs utilisent **k€** (milliers d’euros) et **M€** (millions d’euros) ; les prix d’achat et les transactions affichent les montants exacts en **€**. Exemple : maison de base à 80 000 €, première extension à 50 000 €. Le budget initial est de 1 200 000 €.
+
+Les matières, le pétrole et l’alimentation sont en **tonnes (t)**. Les productions et consommations sont en **t/min**. Le marché échange par lots de **100 t** ; le bois coûte 300 €/t à l’achat et 180 €/t à la vente. La différence entre achat et vente empêche un aller-retour rentable.
+
+Les sauvegardes précédentes sont converties une seule fois : un ancien point de monnaie vaut 1 000 €, une ancienne unité de stock vaut 10 t. Leurs bâtiments, projets et terrains sont conservés. Le jeu est accéléré ; les quantités et les prix servent l’équilibrage et ne reproduisent pas un marché réel.
+
 ## Jouer
 
 Choisir un bâtiment dans **Construire**, puis toucher une case libre. Toucher un bâtiment pour l’améliorer, ou une case + pour l’acheter. Les menus **Ville** et **Stocks** affichent les services, le budget et le marché. La liste des cases permet aussi de jouer au clavier.
