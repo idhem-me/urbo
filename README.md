@@ -47,7 +47,7 @@ Les sauvegardes précédentes sont converties une seule fois : un ancien point d
 
 ## Jouer
 
-Choisir un bâtiment dans **Construire**, puis toucher une case libre. Toucher un bâtiment pour l’améliorer, ou une case + pour l’acheter. Les menus **Ville** et **Stocks** affichent les services, le budget et le marché. La liste des cases permet aussi de jouer au clavier.
+Choisir un bâtiment dans **Construire**, puis toucher une case libre. Toucher un bâtiment pour l’améliorer, ou une case + pour l’acheter. Les menus **Ville** et **Stocks** affichent les services, le budget et le marché. La carte est utilisable au clavier : flèches pour choisir une case, Entrée pour agir.
 
 L’interface utilise une palette zinc (blanc, noir, gris). La carte et les indicateurs sémantiques utilisent de la couleur : vert (OK), orange (À surveiller), rouge (Critique). Aucun emoji : les services, ressources, boutons et bâtiments utilisent les mêmes icônes SVG Lucide. Elles sont servies depuis l’application, sans CDN. Les couleurs destructrices restent disponibles dans les variantes shadcn/ui et servent aux erreurs et aux déficits. Il n’y a pas encore d’action de suppression de bâtiment.
 
@@ -71,7 +71,7 @@ Si le projet Vercel utilisait auparavant `public` comme dossier de sortie, retir
 
 Sauvegarde locale automatique et export JSON ; reprise limitée à huit heures. Les anciennes parties sont migrées. Effacer les données du navigateur supprime la partie. L’import JSON reste à réaliser.
 
-**La connexion Google et la sauvegarde Supabase ne sont pas encore intégrées.** La migration SQL de départ figure dans `supabase/001_saves.sql`. Le jeu reste une simulation cliente, sans autorité serveur.
+**La connexion Google est disponible après configuration Supabase. La sauvegarde cloud n’est pas encore intégrée.** La migration SQL de départ figure dans `supabase/001_saves.sql`. Le jeu reste une simulation cliente, sans autorité serveur.
 
 ## Organisation
 
@@ -94,3 +94,20 @@ Le rendu sur iPhone et Android reste à vérifier sur appareil réel. Les servic
 ## Tokens d’état
 
 Les tokens `success`, `warning` et `danger` sont partagés par le CSS, Tailwind et les composants shadcn/ui. Les seuils sont centralisés dans `src/status.js`. Les boutons destructifs restent rouges via un alias de `danger`. Voir `docs/DESIGN_TOKENS.md`.
+
+## Version 0.7 : catalogue, finances et réglages
+
+Tous les panneaux du bas occupent 85 % de la hauteur, sans fond assombri. Le panneau Réglages s’ouvre sur le côté à droite. Les catégories sont en grille, les informations des bâtiments sont dans leur bouton (i), utilisable au toucher. Les prix du catalogue sont en k€, M€ et Md€. Les pastels distinguent logements (vert), commerce (bleu), bureaux (violet), industrie (jaune) et services (rose). La boutique avec logements apparaît dans Logements et Commerce sans créer deux bâtiments différents.
+
+Le budget peut devenir négatif. Aucune construction ou amélioration n’est possible sous zéro. Dans Ville, la Banque propose des prêts avec remboursement automatique et remboursement anticipé ; elle peut refuser si les recettes ne couvrent pas les échéances avec une marge de 20 %. Dépasser le découvert autorisé termine la partie. Le bouton Recommencer crée une nouvelle ville. Les impôts sont séparés pour les logements, commerces et bureaux ; le budget des services modifie leurs dépenses et leur capacité. Voir `docs/BANQUE.md`.
+
+Le nom de ville se change dans Ville et reste dans la sauvegarde. Dans Réglages : thème Système/Clair/Sombre, export JSON et compte Google. L’aide est à côté du solde/min. Le thème est conservé sur cet appareil et s’applique avant le premier affichage.
+
+### Activer Google
+
+1. Copier `.env.example` vers `.env.local`.
+2. Renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` avec l’URL du projet et sa clé publique.
+3. Dans Supabase Auth, activer Google avec les identifiants OAuth Google, et autoriser l’adresse de retour de l’application (localhost ou Vercel).
+4. Redémarrer `npm run dev`. Sur Vercel, ajouter les mêmes variables dans les paramètres du projet puis redéployer.
+
+Sans ces variables, le bouton Google est désactivé avec un message de configuration ; aucune fausse connexion n’est simulée. Une fois connecté, le compte et le bouton Déconnexion remplacent le bouton Google. Ne jamais mettre le secret Google ou une clé service_role dans les variables VITE_ : elles sont publiques. L’export et la partie restent locaux ; connecter Google ne synchronise pas encore la ville entre appareils.

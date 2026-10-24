@@ -10,7 +10,7 @@ Les maisons et les boutiques avec logements fournissent une capacité résidenti
 
 Les écoles créent une capacité de formation, réduite lorsque le personnel est insuffisant. Les actifs formés occupent d’abord les postes qualifiés (bureaux et hôpital), puis les actifs restants les emplois ordinaires. Le taux de personnel ordinaire est réparti uniformément entre services et activités ; pas d’affectation manuelle dans cette version.
 
-Les recettes sont les impôts et les activités commerciales/de bureaux, moins l’entretien de tous les bâtiments. Une mairie améliore le taux de collecte de 70 à 100 % selon sa couverture. La fiscalité douce attire davantage mais rapporte moins par habitant. La trésorerie peut atteindre zéro mais il n’y a pas de dette.
+Les recettes sont les impôts et les activités commerciales/de bureaux, moins l’entretien de tous les bâtiments. Une mairie améliore le taux de collecte de 70 à 100 % selon sa couverture. La fiscalité douce attire davantage mais rapporte moins par habitant. Le budget peut devenir négatif ; la banque et la faillite sont décrites dans BANQUE.md.
 
 ## Énergie et ressources
 

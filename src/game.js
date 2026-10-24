@@ -1,20 +1,22 @@
-import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT} from './engine.js';
+import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT,setSectorTax,setServiceBudget,bankPolicy,loanQuote,borrow,repayDebt,renameCity} from './engine.js';
 import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
 import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
+import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS} from './catalog';
+import {mountSettings} from './settings';
 import {money,tonnes} from './units';
 import {buttonVariants} from './components/ui/button';
 export function mountGame(){
 const lifetime=new AbortController();
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d');
 let state;try{state=restore(localStorage.getItem('rivage-v1'));}catch{state=initial();}
-let inspected=null,selectedLand=null,plotsKey='',toastTimer;
-let category='Logements';
+let inspected=null,selectedLand=null,toastTimer;
+let category='Logements',offerKey='';
 let selected=null,zoom=1.3,pan={x:0,y:0},W=0,H=0,unit=30,origin={x:0,y:0},hover=null;
 function buildingName(type){return ({fire:'Pompiers',police:'Police',ambulance:'Ambulances',coal:'Charbon',solar:'Solaire',oil:'Pétrole',farm:'Ferme',workshop:'Atelier',football:'Foot',tennis:'Tennis',gym:'Salle de sport',mixedShop:'Boutique + logements',supermarket:'Supermarché',mall:'Centre commercial'})[type]||TYPES[type].name;}
 const fmt=n=>Math.floor(n).toLocaleString('fr-FR');
 function buttonLabel(id,text){const button=$(id),label=button.querySelector('[data-button-label]');if(label)label.textContent=text;else button.textContent=text;}
-function openSheet(id){for(const d of document.querySelectorAll('dialog[open]'))if(d.id!==id)d.close();if(!$(id).open)$(id).showModal();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String(b.dataset.openSheet===id));}
-function closeSheet(id){if($(id).open)$(id).close();}
+function openSheet(id){if(state.gameOver&&id!=='game-over')return;closeTooltips();for(const d of document.querySelectorAll('dialog[open]'))if(d.id!==id)d.close();if(!$(id).open)$(id).showModal();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String(b.dataset.openSheet===id));}
+function closeSheet(id){closeTooltips();if($(id).open)$(id).close();}
 function selectedType(){return selected||'house';}
 function statusNote(id,text,status='neutral'){
  const el=$(id);el.dataset.status=status;el.replaceChildren();
@@ -40,37 +42,32 @@ function save(){try{localStorage.setItem('rivage-v1',JSON.stringify(state));$('s
 function update(){
  const st=stats(state),pg=progression(state);
  $('money').textContent=money(state.money,true);const budget=budgetStatus(state.money,st.income);$('money').parentElement.dataset.status=budget;$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)} · ${STATUS[budget].label}`);$('money').parentElement.title=`Budget : ${STATUS[budget].label}`;
- $('people').textContent=fmt(st.people);
+ $('people').textContent=fmt(st.people);$('city-name-display').textContent=state.cityName;document.title=state.cityName+' · Urbo';
  $('income').textContent=(st.income>=0?'+':'−')+money(Math.abs(st.income),true)+'/min';const flow=incomeStatus(st.income);$('income').parentElement.dataset.status=flow;$('income').parentElement.setAttribute('aria-label',`Solde : ${money(st.income)} par minute · ${STATUS[flow].label}`);$('income').parentElement.title=`Solde : ${STATUS[flow].label}`;
  $('jobs').textContent=`${st.employed} / ${st.jobs}`;
  $('employment').textContent=`${st.unemployment} % sans emploi`;
  $('appeal').textContent=st.attractiveness+' / 100';
  $('housing').textContent=`${st.people} / ${st.homes} places`;
- $('tax').value=state.tax;
- $('economy').textContent=`Par minute : impôts +${money(st.taxes)} · activités +${money(st.commerce)} · frais −${money(st.upkeep)}.`;
+for(const sector of ['residential','commerce','office'])$('tax-'+sector).value=state.taxes[sector];$('service-budget').value=state.serviceBudget;
+ $('economy').textContent=`Par minute : impôts +${money(st.taxes)} · activités +${money(st.commerce)} · frais −${money(st.upkeep)} · banque −${money(st.debtService)}.`;
  statusNote('advice',st.income<0?'Dépenses trop élevées.':st.unemployment>0?'Ajoutez des emplois.':st.jobs>st.workers?'Il manque des habitants.':'Emplois équilibrés.',st.income<0?'danger':st.unemployment>0||st.jobs>st.workers?'warning':'success');
  renderAdmin(st);inspect();landInspect();
  $('level').textContent=pg.index+1;
  $('progression').textContent=pg.next?`Prochain niveau : ${pg.next.people} habitants.`:'Dernier niveau atteint.';
  $('territory').textContent=`${state.owned.length} / 81 cases. Case suivante : ${money(landPrice(state))}.`;
- $('selected-name').textContent=buildingName(selectedType());
- $('selected-effects').textContent=describe(effects({type:selectedType(),level:1}))+(['mall','supermarket'].includes(selectedType())?' · Parking inclus.':'');
- document.querySelectorAll('.card').forEach(b=>{
-  const cost=projectCost(b.dataset.type,1,state),missing=requirements(state,b.dataset.type);
-  b.querySelector('em').textContent=`${money(cost.money)} · ${tonnes(cost.timber)} bois · ${tonnes(cost.stone)} pierre`;
-  b.querySelector('.conditions').textContent=missing.length?`Dès ${(missing[0].match(/\d+/)?.[0]||'plus d’')} habitants`:'';
-  b.setAttribute('aria-pressed',String(b.dataset.type===selected));
+ document.querySelectorAll('.catalog-tile').forEach(tile=>{
+  const type=tile.dataset.type,cost=projectCost(type,1,state),missing=requirements(state,type);
+  tile.querySelector('em').textContent=money(cost.money,true);
+  tile.querySelector('.material-cost').textContent=`${tonnes(cost.timber)} bois · ${tonnes(cost.stone)} pierre`;
+  tile.querySelector('.conditions').textContent=missing.length?`Dès ${(missing[0].match(/\d+/)?.[0]||'plus d’')} habitants`:'';
+  tile.querySelector('.card-select').setAttribute('aria-pressed',String(type===selected));tile.querySelector('.card-select').disabled=state.money<0||Boolean(state.gameOver);
+  tile.querySelector('.tooltip-cost').textContent=`Prix : ${money(cost.money)}. Bois : ${tonnes(cost.timber)}. Pierre : ${tonnes(cost.stone)}.`;
+  tile.querySelector('.tooltip-condition').textContent=missing.join(' · ');
  });
+$('build-blocked').hidden=state.money>=0&&!state.gameOver;if(!$('build-blocked').hidden)statusNote('build-blocked','Budget négatif : empruntez ou ajustez les impôts.','danger');renderBank(st);if(state.gameOver){$('game-over-reason').textContent=`Budget : ${money(state.money)}. Limite : −${money(state.gameOver.limit)}.`;openSheet('game-over');}
  const demand=demands(state);for(const [key,value] of Object.entries(demand)){const bar=$('demand-'+key),status=key==='services'?(value>=60?'danger':value>=20?'warning':'success'):(value>=60?'success':value>=25?'warning':'neutral');bar.parentElement.parentElement.dataset.status=status;bar.parentElement.parentElement.title=`${value} / 100 · ${key==='services'?'Besoins non couverts':value>=60?'Forte demande':value>=25?'Demande moyenne':'Faible demande'}`;bar.style.width=value+'%';bar.parentElement.setAttribute('aria-valuenow',String(value));bar.parentElement.setAttribute('aria-valuetext',`${value} sur 100`);}
- renderPlots();
 }
 
-function renderPlots(){
- const next=JSON.stringify([selected,state.owned,state.buildings,state.projects.map(p=>[p.x,p.y])]);
- if(next===plotsKey)return;
- plotsKey=next;
- $('plots').replaceChildren();for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++)if(validPlot(x,y)){const b=document.createElement('button');const existing=state.buildings.find(b=>b.x===x&&b.y===y);b.textContent=existing?`${buildingName(existing.type)} N${existing.level} (${x+1}, ${y+1})`:`${x+1}, ${y+1}`;b.setAttribute('aria-label',existing?`Inspecter ${buildingName(existing.type)}, niveau ${existing.level}, parcelle ${x+1}, ${y+1}`:`Construire ${buildingName(selectedType())} sur la parcelle ${x+1}, ${y+1}`);if(!existing&&!owns(state,x,y)){b.textContent=`${x+1}, ${y+1} · ${adjacentLand(state,x,y)?`acheter ${money(landPrice(state))}`:'verrouillée'}`;b.setAttribute('aria-label',b.textContent);b.disabled=!adjacentLand(state,x,y);}b.onclick=()=>place(x,y);$('plots').append(b);}
-}
 function poly(points,fill,stroke){ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}}
 function pos(x,y){return {x:origin.x+(x-y)*unit,y:origin.y+(x+y)*unit*.5};}
 function diamond(x,y,color){poly([[x,y-unit*.5],[x+unit,y],[x,y+unit*.5],[x-unit,y]],color,'#ffffff18');}
@@ -88,6 +85,8 @@ function place(x,y){
  inspected=null;if(!selected){message('Choisissez un bâtiment dans Construire.');return;}
  const err=build(state,selected,x,y);message(err||`Travaux : ${buildingName(selected)}.`,err?'danger':'success');save();update();draw();
 }
+let keyboardCell={x:2,y:2};
+canvas.addEventListener('keydown',e=>{const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(moves[e.key]){e.preventDefault();keyboardCell={x:Math.max(0,Math.min(GRID-1,keyboardCell.x+moves[e.key][0])),y:Math.max(0,Math.min(GRID-1,keyboardCell.y+moves[e.key][1]))};hover=keyboardCell;canvas.setAttribute('aria-label',`Case ${keyboardCell.x+1}, ${keyboardCell.y+1}. Entrée pour agir.`);draw();}else if(e.key==='Enter'||e.key===' '){e.preventDefault();place(keyboardCell.x,keyboardCell.y);}},{signal:lifetime.signal});
 const pointers=new Map();let gesture=null,dragged=false;
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});dragged=false;gesture={x:e.clientX,y:e.clientY};if(pointers.size>1)dragged=true;},{signal:lifetime.signal});
 canvas.addEventListener('pointermove',e=>{
@@ -100,15 +99,34 @@ canvas.addEventListener('pointermove',e=>{
 canvas.addEventListener('pointerup',e=>{const tap=!dragged&&pointers.size===1;pointers.delete(e.pointerId);if(tap){const p=cell(e);place(p.x,p.y);}if(pointers.size)dragged=true;},{signal:lifetime.signal});
 canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);dragged=true;},{signal:lifetime.signal});
 canvas.addEventListener('pointerleave',()=>{hover=null;draw();},{signal:lifetime.signal});
+let tooltipTimer;
+function closeTooltips(){clearTimeout(tooltipTimer);for(const tip of document.querySelectorAll('.catalog-tooltip')){if(typeof tip.hidePopover==='function'&&tip.matches(':popover-open'))tip.hidePopover();tip.hidden=true;const trigger=$(tip.id+'-trigger');trigger?.setAttribute('aria-expanded','false');}}
+function showTooltip(trigger,tip){
+ closeTooltips();tip.hidden=false;trigger.setAttribute('aria-expanded','true');
+ if(typeof tip.showPopover==='function'){
+  tip.showPopover();const r=trigger.getBoundingClientRect(),bounds=tip.getBoundingClientRect(),width=Math.min(300,window.innerWidth-32);
+  tip.style.width=width+'px';tip.style.left=Math.max(16,Math.min(window.innerWidth-width-16,r.right-width))+'px';
+  tip.style.top=Math.max(12,r.bottom+8+bounds.height<window.innerHeight-12?r.bottom+8:r.top-bounds.height-8)+'px';
+ }else tip.classList.add('tooltip-fallback');
+}
 function renderCatalog(){
- $('catalog').replaceChildren();
- for(const [type,t] of Object.entries(TYPES).filter(([,t])=>t.category===category)){
-  const b=document.createElement('button');
-  b.className='card'+(type===selected?' active':'');b.dataset.type=type;
-  const cost=projectCost(type,1,state);
-  b.innerHTML=`<span class="card-heading">${iconMarkup(type)}<b>${buildingName(type)}</b></span><small>${brief(effects({type,level:1}))}</small><em>${money(cost.money)} · ${tonnes(cost.timber)} bois · ${tonnes(cost.stone)} pierre</em><small>${projectDuration(type)/1000} s</small><small class="conditions"></small>`;
+ closeTooltips();$('catalog').replaceChildren();
+ for(const [type] of Object.entries(TYPES).filter(([type])=>buildingCategories(type).includes(category))){
+  const tile=document.createElement('article'),b=document.createElement('button'),info=document.createElement('button'),tip=document.createElement('div');
+  const cost=projectCost(type,1,state),tipId='info-'+type,families=buildingFamilies(type);
+  tile.className='catalog-tile';tile.dataset.type=type;tile.dataset.family=catalogFamily(type,category);
+  b.type='button';b.className='card-select';b.setAttribute('aria-pressed',String(type===selected));
+  b.innerHTML=`<span class="card-heading">${iconMarkup(type)}<b>${buildingName(type)}</b></span><span class="family-tags">${families.map(f=>`<span class="family-tag" data-family="${f}">${FAMILY_LABELS[f]}</span>`).join('')}</span><small>${brief(effects({type,level:1}))}</small><em>${money(cost.money,true)}</em><small class="material-cost">${tonnes(cost.timber)} bois · ${tonnes(cost.stone)} pierre</small><small>${projectDuration(type)/1000} s</small><small class="conditions"></small>`;
   b.onclick=()=>{selected=type;renderCatalog();$('placement').hidden=false;$('placement-label').textContent=buildingName(type);closeSheet('build-sheet');message('Touchez une case libre.');update();};
-  $('catalog').append(b);
+  info.type='button';info.id=tipId+'-trigger';info.className='tile-info';info.innerHTML=iconMarkup('info');info.setAttribute('aria-label',`Détails : ${buildingName(type)}`);info.setAttribute('aria-describedby',tipId);info.setAttribute('aria-expanded','false');
+  tip.id=tipId;tip.className='catalog-tooltip';tip.hidden=true;tip.setAttribute('role','tooltip');tip.setAttribute('popover','auto');
+  tip.innerHTML=`<b>${buildingName(type)}</b><p>${describe(effects({type,level:1}))}${['mall','supermarket'].includes(type)?' · Parking inclus.':''}</p><p class="tooltip-cost"></p><p class="tooltip-condition"></p>`;
+  info.onclick=e=>{e.stopPropagation();info.getAttribute('aria-expanded')==='true'?closeTooltips():showTooltip(info,tip);};
+  info.onpointerenter=e=>{if(e.pointerType==='mouse')showTooltip(info,tip);};
+  info.onfocus=()=>{if(info.matches(':focus-visible'))showTooltip(info,tip);};
+  info.onpointerleave=e=>{if(e.pointerType==='mouse')tooltipTimer=setTimeout(closeTooltips,180);};tip.onpointerenter=()=>clearTimeout(tooltipTimer);tip.onpointerleave=e=>{if(e.pointerType==='mouse')closeTooltips();};
+  tip.addEventListener('toggle',()=>{if(typeof tip.showPopover==='function'&&!tip.matches(':popover-open')){tip.hidden=true;info.setAttribute('aria-expanded','false');}},{signal:lifetime.signal});
+  tile.append(b,info,tip);$('catalog').append(tile);
  }
 }
 function brief(e){
@@ -118,7 +136,7 @@ function brief(e){
  return parts.slice(0,2).join(' · ');
 }
 $('demand').replaceChildren();$('categories').replaceChildren();
-for(const name of CATEGORIES){const b=document.createElement('button');b.className=buttonVariants({variant:'outline',size:'sm'});b.innerHTML=iconMarkup(CATEGORY_ICONS[name])+`<span>${name}</span>`;b.setAttribute('aria-pressed',String(category===name));b.onclick=()=>{category=name;$('category-title').textContent=name;document.querySelectorAll('#categories button').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));renderCatalog();update();};$('categories').append(b);}
+for(const name of CATEGORIES){const b=document.createElement('button');b.className=buttonVariants({variant:'outline',size:'sm'});b.dataset.category=name;b.dataset.family=CATEGORY_FAMILIES[name];b.innerHTML=iconMarkup(CATEGORY_ICONS[name])+`<span>${name}</span>`;b.setAttribute('aria-pressed',String(category===name));b.onclick=()=>{category=name;$('category-title').textContent=name;document.querySelectorAll('#categories button').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));renderCatalog();update();};$('categories').append(b);}
 renderCatalog();
 $('zoom').onclick=()=>{zoom=zoom<1.8?2:1.3;$('zoom').innerHTML=iconMarkup(zoom<1.8?'plus':'minus');resize();};$('soundless').onclick=()=>openSheet('help');$('export').onclick=()=>{accrue(state);const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='urbo-sauvegarde.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 function describe(e){
@@ -145,14 +163,14 @@ function inspect(){
   if(state.projects.length>=stats(state).capacity)reasons.push('Chantiers pleins.');
  }
  statusNote('upgrade-reason',pending?'Amélioration en cours.':missing.length?missing.join(' · '):reasons.join(' '),pending?'neutral':missing.length||reasons.length?'warning':'neutral');
- $('upgrade').disabled=cost===null||pending||missing.length>0||reasons.length>0;$('demolish').disabled=pending;
+ $('upgrade').disabled=Boolean(state.gameOver)||state.money<0||cost===null||pending||missing.length>0||reasons.length>0;$('demolish').disabled=pending;
 }
 $('upgrade').onclick=()=>{if(!inspected)return;const err=upgrade(state,inspected.x,inspected.y);message(err||'Amélioration en cours.',err?'danger':'success');save();update();draw();};
 $('demolish').onclick=()=>{$('demolition-confirm').hidden=false;};
 $('cancel-demolish').onclick=()=>{$('demolition-confirm').hidden=true;};
 $('confirm-demolish').onclick=()=>{if(!inspected)return;const err=demolish(state,inspected.x,inspected.y);if(!err){inspected=null;closeSheet('building-sheet');}message(err||'Bâtiment détruit.',err?'danger':'success');save();update();draw();};
 $('cancel-placement').onclick=()=>{selected=null;$('placement').hidden=true;message('Construction annulée.');renderCatalog();update();};
-$('tax').onchange=e=>{setTax(state,e.target.value);save();update();message('Impôts modifiés.','success');};
+for(const input of document.querySelectorAll('[data-tax-sector]'))input.onchange=e=>{setSectorTax(state,input.dataset.taxSector,e.target.value);save();update();message('Impôts modifiés.','success');};$('service-budget').onchange=e=>{setServiceBudget(state,e.target.value);save();update();draw();message('Budget des services modifié.','success');};
 $('resources').replaceChildren();
 for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);const indicator=document.createElement('span');indicator.id='stock-status-'+key;indicator.className='stock-indicator';row.append(indicator);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',err?'danger':'success');save();update();};row.append(button);}$('resources').append(row);}
 const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
@@ -186,15 +204,37 @@ function landInspect(){
 $('buy-land').onclick=()=>{if(!selectedLand)return;const err=buyLand(state,selectedLand.x,selectedLand.y);message(err||'Case achetée.',err?'danger':'success');if(!err){selectedLand=null;closeSheet('land-sheet');}save();update();draw();};
 
 
-for(const [key,label,icon] of [['residential','Résidence','house'],['industrial','Industrie','factory'],['office','Bureaux','office'],['services','Services','police']]){
+for(const [key,label,icon] of [['residential','Résidence','house'],['commerce','Commerce','shop'],['industrial','Industrie','factory'],['office','Bureaux','office'],['services','Services','police']]){
  const item=document.createElement('div');item.innerHTML=`<span>${iconMarkup(icon)}${label}</span><div class="demand-track" role="progressbar" aria-label="Demande ${label}" aria-valuemin="0" aria-valuemax="100"><i id="demand-${key}"></i></div>`;$('demand').append(item);
 }
 for(const b of document.querySelectorAll('[data-open-sheet]')){b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls',b.dataset.openSheet);b.onclick=()=>openSheet(b.dataset.openSheet);}
 for(const b of document.querySelectorAll('[data-close-sheet]'))b.onclick=()=>closeSheet(b.dataset.closeSheet);
 for(const d of document.querySelectorAll('dialog')){
- d.addEventListener('click',e=>{const r=d.getBoundingClientRect();if(e.target===d&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))d.close();},{signal:lifetime.signal});
- d.addEventListener('close',()=>{for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String($(b.dataset.openSheet).open));},{signal:lifetime.signal});
+ d.addEventListener('cancel',e=>{if(d.dataset.dismissible==='false')e.preventDefault();},{signal:lifetime.signal});
+ d.addEventListener('click',e=>{if(d.dataset.dismissible==='false')return;const r=d.getBoundingClientRect();if(e.target===d&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))d.close();},{signal:lifetime.signal});
+ d.addEventListener('close',()=>{closeTooltips();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String($(b.dataset.openSheet).open));},{signal:lifetime.signal});
 }
+function renderBank(st){
+ const policy=bankPolicy(state);
+ $('bank-summary').textContent=`Dette : ${money(st.debt,true)} · Découvert autorisé : ${money(policy.overdraft,true)}.`;
+ $('bank-policy').textContent=`Plafond de crédit : ${money(policy.credit)}. Découvert maximum : ${money(policy.overdraft)} (${Math.round(policy.overdraftRate*100)} % du plafond). Taux : ${(policy.rate*100).toLocaleString('fr-FR')} % par minute.`;
+ $('bank-debt').textContent=`Capital restant : ${money(st.debt)}. Remboursement actuel : ${money(st.debtService)}/min, dont ${money(st.interest)} d’intérêts.`;
+ const amounts=[...new Set([.25,.5,1].map(r=>Math.max(25000,Math.floor(policy.credit*r/25000)*25000)))];
+ if(offerKey!==amounts.join(',')){offerKey=amounts.join(',');$('loan-offers').replaceChildren();for(const amount of amounts){const item=document.createElement('article');item.className='loan-offer';item.dataset.loanAmount=amount;item.innerHTML=`<h3>${money(amount,true)}</h3><p class="loan-payment"></p><p class="loan-reason"></p>`;const button=document.createElement('button');button.className=buttonVariants({variant:'default'});button.textContent='Emprunter';button.onclick=()=>{const err=borrow(state,amount);message(err||'Prêt accepté.',err?'danger':'success');save();update();};item.append(button);$('loan-offers').append(item);}}
+ for(const item of document.querySelectorAll('[data-loan-amount]')){const quote=loanQuote(state,Number(item.dataset.loanAmount));item.querySelector('.loan-payment').textContent=`${money(quote.payment)}/min au départ · ${quote.duration} min`;item.querySelector('.loan-reason').textContent=quote.reason||'Prêt disponible';item.querySelector('button').disabled=!quote.approved;}
+ const repay=Math.max(0,Math.min(state.money,st.debt));$('repay-info').textContent=`Remboursement anticipé possible : ${money(repay)}.`;$('repay-debt').disabled=Boolean(state.gameOver)||repay<=0;
+}
+$('settings').onclick=()=>openSheet('settings-sheet');
+$('city-name').value=state.cityName;
+$('city-name-form').onsubmit=e=>{e.preventDefault();const err=renameCity(state,$('city-name').value);if(!err)$('city-name').value=state.cityName;message(err||'Ville renommée.',err?'danger':'success');save();update();};
+$('open-bank').onclick=()=>openSheet('bank-sheet');
+$('repay-debt').onclick=()=>{const err=repayDebt(state,Math.max(0,Math.min(state.money,stats(state).debt)));message(err||'Dette remboursée.',err?'danger':'success');save();update();};
+$('restart').onclick=()=>{closeSheet('game-over');state=initial();$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Logements';$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();save();update();resize();message('Nouvelle partie.','success');};
+
 update();
-return ()=>{save();lifetime.abort();clearInterval(ticker);clearTimeout(toastTimer);observer.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
+document.addEventListener('focusin',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.tile-info[aria-expanded=true]')){e.preventDefault();e.stopPropagation();closeTooltips();}},{capture:true,signal:lifetime.signal});
+const cleanupSettings=mountSettings();
+return ()=>{cleanupSettings();closeTooltips();save();lifetime.abort();clearInterval(ticker);clearTimeout(toastTimer);observer.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
 }

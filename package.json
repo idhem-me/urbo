@@ -1,6 +1,6 @@
 {
   "name": "urbo",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.5.0",
+    "@supabase/supabase-js": "^2.118.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide": "^1.61.0",
