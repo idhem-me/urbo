@@ -71,7 +71,7 @@ Si le projet Vercel utilisait auparavant `public` comme dossier de sortie, retir
 
 Sauvegarde locale automatique et export JSON ; reprise limitée à huit heures. Les anciennes parties sont migrées. Effacer les données du navigateur supprime la partie. L’import JSON reste à réaliser.
 
-**La connexion Google est disponible après configuration Supabase. La sauvegarde cloud n’est pas encore intégrée.** La migration SQL de départ figure dans `supabase/001_saves.sql`. Le jeu reste une simulation cliente, sans autorité serveur.
+**La connexion Google est disponible après configuration Supabase. La sauvegarde cloud des villes est disponible après exécution de la migration 002.** La migration SQL de départ figure dans `supabase/001_saves.sql`. Le jeu reste une simulation cliente, sans autorité serveur.
 
 ## Organisation
 
@@ -110,7 +110,7 @@ Le nom de ville se change dans Ville et reste dans la sauvegarde. Dans Réglages
 3. Dans Supabase Auth, activer Google avec les identifiants OAuth Google, et autoriser l’adresse de retour de l’application (localhost ou Vercel).
 4. Redémarrer `npm run dev`. Sur Vercel, ajouter les mêmes variables dans les paramètres du projet puis redéployer.
 
-Sans ces variables, le bouton Google est désactivé avec un message de configuration ; aucune fausse connexion n’est simulée. Une fois connecté, le compte et le bouton Déconnexion remplacent le bouton Google. Ne jamais mettre le secret Google ou une clé service_role dans les variables VITE_ : elles sont publiques. L’export et la partie restent locaux ; connecter Google ne synchronise pas encore la ville entre appareils.
+Sans ces variables, le bouton Google est désactivé avec un message de configuration ; aucune fausse connexion n’est simulée. Une fois connecté, le compte et le bouton Déconnexion remplacent le bouton Google. Ne jamais mettre le secret Google ou une clé service_role dans les variables VITE_ : elles sont publiques. Les villes invitées restent locales. Après la migration 002, les villes créées dans un compte sont synchronisées. Les villes invitées peuvent être copiées explicitement dans le compte depuis Mes villes.
 
 ## Version 0.8 : nuit et départ guidé
 
@@ -121,3 +121,21 @@ Dans Réglages, **Recommencer à zéro** ouvre une confirmation avant de remplac
 Les nouvelles villes commencent avec sept objectifs : deux maisons, solaire, ferme, épicerie, premiers bénéfices et amélioration d’une maison. Un bouton choisit l’action suivante ; une case en pointillés montre où construire. Les prix sont visibles avant placement. Les chantiers guidés prennent 3 secondes, les améliorations guidées 4 secondes, dans la limite des huit premiers projets. Chaque objectif terminé verse une prime unique ; les revenus réels restent calculés par l’économie.
 
 Le guide peut être passé. Après sa fin, les durées et conditions habituelles reviennent. Les villes existantes ne sont ni effacées ni placées de force dans le scénario ; pour tester le nouveau départ, utiliser Réglages → Recommencer à zéro. Voir `docs/DEMARRAGE.md`.
+
+## Version 0.9 : plusieurs villes
+
+**Réglages → Mes villes** permet de créer et d’ouvrir plusieurs villes. Chacune garde ses bâtiments, son budget, ses prêts, son nom et son guide. Recommencer à zéro remplace uniquement la ville active. Exporter sauvegarde uniquement cette ville.
+
+La partie locale précédente est importée automatiquement en mode invité et sa sauvegarde historique est conservée. Les villes invitées et celles de chaque compte Google ont des caches séparés. Se connecter ne transfère pas silencieusement la ville invitée : utiliser **Copier mes villes de cet appareil** si vous souhaitez l’ajouter au compte.
+
+### Activer le cloud multi-villes
+
+1. Garder la configuration Google/Supabase de `.env.local`.
+2. Dans **Supabase → SQL Editor**, exécuter **`supabase/002_multiple_cities.sql`**.
+3. Mettre le jeu à jour, se connecter à Google, puis ouvrir **Réglages → Mes villes**.
+
+La migration crée une ligne par ville avec une politique d’accès au propriétaire. Si l’ancienne table `city_saves` existe, elle en copie les sauvegardes sans la supprimer. Il n’est pas nécessaire d’exécuter 001 si vous partez d’une base sans sauvegardes.
+
+La synchronisation regroupe les modifications toutes les cinq secondes environ ; **Synchroniser** permet aussi de la déclencher. Une panne réseau garde les modifications dans le cache du compte. Si deux appareils modifient la même ville, une copie locale est conservée au lieu d’écraser l’autre version. Le compteur de révision protège les mises à jour concurrentes.
+
+Les migrations SQL et la connexion à votre Supabase restent à exécuter/valider dans votre projet : aucun accès administrateur à votre base n’est configuré dans cet environnement. Les tests automatisés couvrent le stockage local, les conflits et la synchronisation simulée. Voir `docs/MULTI_VILLES.md`.

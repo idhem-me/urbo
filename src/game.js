@@ -2,6 +2,8 @@ import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgra
 import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
 import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
 import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS} from './catalog';
+import {CityStore,GUEST} from './city-store';
+import {CitySync} from './city-sync';
 import {mountSettings} from './settings';
 import {sceneColor} from './scene';
 import {money,tonnes} from './units';
@@ -9,7 +11,10 @@ import {buttonVariants} from './components/ui/button';
 export function mountGame(){
 const lifetime=new AbortController();
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d');
-let state;try{state=restore(localStorage.getItem('rivage-v1'));}catch{state=initial();}
+let storage;try{storage=localStorage;}catch{}
+let cityStore=new CityStore({storage}),citySync=null,changingAccount=false,accountGeneration=0,disposed=false,cityListKey='',cloudStatus='Sauvegarde sur cet appareil.',cloudKind='neutral';
+try{cityStore.ensureGuest();}catch{}
+let state=cityStore.active?cityStore.activeState():initial();
 let inspected=null,selectedLand=null,toastTimer;
 let category='Logements',offerKey='',guideTarget=null,lastTutorialStep=state.tutorial.step,isNight=document.documentElement.classList.contains('dark');
 const paint=color=>sceneColor(color,isNight);
@@ -17,7 +22,7 @@ let selected=null,zoom=1.3,pan={x:0,y:0},W=0,H=0,unit=30,origin={x:0,y:0},hover=
 function buildingName(type){return ({fire:'Pompiers',police:'Police',ambulance:'Ambulances',coal:'Charbon',solar:'Solaire',oil:'Pétrole',farm:'Ferme',workshop:'Atelier',football:'Foot',tennis:'Tennis',gym:'Salle de sport',mixedShop:'Boutique + logements',supermarket:'Supermarché',mall:'Centre commercial'})[type]||TYPES[type].name;}
 const fmt=n=>Math.floor(n).toLocaleString('fr-FR');
 function buttonLabel(id,text){const button=$(id),label=button.querySelector('[data-button-label]');if(label)label.textContent=text;else button.textContent=text;}
-function openSheet(id){if(state.gameOver&&id!=='game-over')return;closeTooltips();for(const d of document.querySelectorAll('dialog[open]'))if(d.id!==id)d.close();if(!$(id).open)$(id).showModal();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String(b.dataset.openSheet===id));}
+function openSheet(id){if(changingAccount&&id!=='cities-sheet')return;if(state.gameOver&&!['game-over','cities-sheet','settings-sheet'].includes(id))return;closeTooltips();for(const d of document.querySelectorAll('dialog[open]'))if(d.id!==id)d.close();if(!$(id).open)$(id).showModal();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String(b.dataset.openSheet===id));}
 function closeSheet(id){closeTooltips();if($(id).open)$(id).close();}
 function selectedType(){return selected||'house';}
 function statusNote(id,text,status='neutral'){
@@ -40,9 +45,9 @@ function message(text,status='neutral'){
  };
  status=status===true?'danger':status===false?'neutral':status;$('toast').setAttribute('role',status==='danger'?'alert':'status');statusNote('toast',short[text]||text,status);$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},5000);
 }
-function save(){try{localStorage.setItem('rivage-v1',JSON.stringify(state));$('save').textContent='Sauvegarde locale';$('save').dataset.status='success';$('save').classList.add('status-badge');}catch{$('save').textContent='Sauvegarde indisponible';$('save').dataset.status='danger';$('save').classList.add('status-badge');}}
+function save(){if(changingAccount)return false;try{cityStore.save(state);citySync?.schedule();$('save').textContent=cityStore.owner===GUEST?'Sauvegarde locale':'Copie locale du compte';$('save').dataset.status='success';$('save').classList.add('status-badge');return true;}catch{$('save').textContent='Sauvegarde indisponible';$('save').dataset.status='danger';$('save').classList.add('status-badge');return false;}}
 function update(){
- renderTutorial();
+ if(changingAccount)return;renderCities();renderTutorial();
  const st=stats(state),pg=progression(state);
  $('money').textContent=money(state.money,true);const budget=budgetStatus(state.money,st.income);$('money').parentElement.dataset.status=budget;$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)} · ${STATUS[budget].label}`);$('money').parentElement.title=`Budget : ${STATUS[budget].label}`;
  $('people').textContent=fmt(st.people);$('city-name-display').textContent=state.cityName;document.title=state.cityName+' · Urbo';
@@ -67,7 +72,7 @@ for(const sector of ['residential','commerce','office'])$('tax-'+sector).value=s
   tile.querySelector('.tooltip-cost').textContent=`Prix : ${money(cost.money)}. Bois : ${tonnes(cost.timber)}. Pierre : ${tonnes(cost.stone)}.`;
   tile.querySelector('.tooltip-condition').textContent=missing.join(' · ');
  });
-$('build-blocked').hidden=state.money>=0&&!state.gameOver;if(!$('build-blocked').hidden)statusNote('build-blocked','Budget négatif : empruntez ou ajustez les impôts.','danger');renderBank(st);if(state.gameOver){$('game-over-reason').textContent=`Budget : ${money(state.money)}. Limite : −${money(state.gameOver.limit)}.`;openSheet('game-over');}
+$('build-blocked').hidden=state.money>=0&&!state.gameOver;if(!$('build-blocked').hidden)statusNote('build-blocked','Budget négatif : empruntez ou ajustez les impôts.','danger');renderBank(st);if(state.gameOver){$('game-over-reason').textContent=`Budget : ${money(state.money)}. Limite : −${money(state.gameOver.limit)}.`;if(!['cities-sheet','settings-sheet'].some(id=>$(id).open))openSheet('game-over');}
  const demand=demands(state);for(const [key,value] of Object.entries(demand)){const bar=$('demand-'+key),status=key==='services'?(value>=60?'danger':value>=20?'warning':'success'):(value>=60?'success':value>=25?'warning':'neutral');bar.parentElement.parentElement.dataset.status=status;bar.parentElement.parentElement.title=`${value} / 100 · ${key==='services'?'Besoins non couverts':value>=60?'Forte demande':value>=25?'Demande moyenne':'Faible demande'}`;bar.style.width=value+'%';bar.parentElement.setAttribute('aria-valuenow',String(value));bar.parentElement.setAttribute('aria-valuetext',`${value} sur 100`);}
 }
 
@@ -80,7 +85,7 @@ function building(x,y,type,scale=1,level=1){if(!['house','tower','shop','park'].
 function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=paint('#cbded7');ctx.fillRect(0,0,W,H);const a=pos(-.7,-.7),b=pos(GRID,-.7),c=pos(GRID,GRID),d=pos(-.7,GRID);poly([[a.x,a.y],[b.x,b.y],[c.x,c.y+8],[d.x,d.y]],'#d3c9a0');poly([[a.x,a.y-5],[b.x,b.y-5],[c.x,c.y-5],[d.x,d.y-5]],'#d6deae');for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=pos(x,y);diamond(p.x,p.y,x===3||y===3||x===7||y===7?'#d6d4bf':(x+y)%2?'#a8bf80':'#b3c98c');if(x===3||y===3||x===7||y===7){ctx.fillStyle=paint('#eee9d5');ctx.fillRect(p.x-2,p.y-1,4,2);}else if(!owns(state,x,y)){diamond(p.x,p.y,adjacentLand(state,x,y)?'#a6b2a1':'#859b92');if(adjacentLand(state,x,y)){ctx.fillStyle=paint('#f6edcb');ctx.font='12px sans-serif';ctx.textAlign='center';drawIcon(ctx,'plus',p.x-5,p.y-5,10,'#f5f5f5');}}else if(hover?.x===x&&hover?.y===y)diamond(p.x,p.y,'#e7efb9');}if(guideTarget){const p=pos(guideTarget.x,guideTarget.y);ctx.save();ctx.strokeStyle=isNight?'#fde68a':'#735d25';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(p.x,p.y-unit*.5);ctx.lineTo(p.x+unit,p.y);ctx.lineTo(p.x,p.y+unit*.5);ctx.lineTo(p.x-unit,p.y);ctx.closePath();ctx.stroke();ctx.restore();}for(let s=0;s<=(GRID-1)*2;s++)for(let x=0;x<GRID;x++){const y=s-x;if(y<0||y>=GRID)continue;const p=pos(x,y),b=state.buildings.find(b=>b.x===x&&b.y===y);if(b)building(p.x,p.y,b.type,unit/28,b.level);else if(state.projects.some(b=>b.x===x&&b.y===y)){diamond(p.x,p.y,'#d4af72');box(p.x,p.y,12,12,8,'#d0ae71');ctx.fillStyle=paint('#5b563b');ctx.font='12px sans-serif';drawIcon(ctx,'build',p.x-7,p.y-20,14,'#44403c');}else if((x*11+y*3)%9===0&&validPlot(x,y))tree(p.x,p.y,unit/35);}const p=pos(3,6);box(p.x,p.y+15,unit*.35,unit*.35,5,'#c0a77d');ctx.fillStyle=paint('#fff7de');ctx.fillRect(p.x+8,p.y-4,4,9);}
 function resize(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);unit=Math.min(W/24,Math.max(160,H-240)/13)*zoom;origin={x:W*.5+pan.x,y:H*.5-unit*4.8+pan.y};draw();}
 function cell(event){const r=canvas.getBoundingClientRect(),dx=(event.clientX-r.left-origin.x)/unit,dy=(event.clientY-r.top-origin.y)/(unit*.5);return {x:Math.round((dx+dy)/2),y:Math.round((dy-dx)/2)};}
-function place(x,y){
+function place(x,y){if(changingAccount)return;
  if(validPlot(x,y)&&!owns(state,x,y)){inspected=null;selectedLand={x,y};landInspect();openSheet('land-sheet');return;}
  selectedLand=null;
  const existing=state.buildings.find(b=>b.x===x&&b.y===y);
@@ -141,7 +146,7 @@ function brief(e){
 $('demand').replaceChildren();$('categories').replaceChildren();
 for(const name of CATEGORIES){const b=document.createElement('button');b.className=buttonVariants({variant:'outline',size:'sm'});b.dataset.category=name;b.dataset.family=CATEGORY_FAMILIES[name];b.innerHTML=iconMarkup(CATEGORY_ICONS[name])+`<span>${name}</span>`;b.setAttribute('aria-pressed',String(category===name));b.onclick=()=>{category=name;$('category-title').textContent=name;document.querySelectorAll('#categories button').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));renderCatalog();update();};$('categories').append(b);}
 renderCatalog();
-$('zoom').onclick=()=>{zoom=zoom<1.8?2:1.3;$('zoom').innerHTML=iconMarkup(zoom<1.8?'plus':'minus');resize();};$('soundless').onclick=()=>openSheet('help');$('export').onclick=()=>{accrue(state);const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='urbo-sauvegarde.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('zoom').onclick=()=>{zoom=zoom<1.8?2:1.3;$('zoom').innerHTML=iconMarkup(zoom<1.8?'plus':'minus');resize();};$('soundless').onclick=()=>openSheet('help');$('export').onclick=()=>{accrue(state);const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=state.cityName.replace(/[^a-zA-Z0-9-]/g,'-')+'-sauvegarde.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 function describe(e){
  const parts=[];
  for(const [k,label] of Object.entries({homes:'places',jobs:'emplois',educatedJobs:'emplois qualifiés',education:'actifs formés',green:'attrait',power:'énergie produite',energy:'énergie utilisée',pollution:'pollution',fire:'couverture pompiers',police:'couverture police',ambulance:'couverture ambulances',health:'couverture hôpital',admin:'couverture mairie',builders:'chantiers en plus',revenue:'recettes max./min',upkeep:'frais/min'}))if(e[k])parts.push(`${['revenue','upkeep'].includes(k)?money(e[k]):e[k]} ${label}`);
@@ -177,7 +182,7 @@ for(const input of document.querySelectorAll('[data-tax-sector]'))input.onchange
 $('resources').replaceChildren();
 for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);const indicator=document.createElement('span');indicator.id='stock-status-'+key;indicator.className='stock-indicator';row.append(indicator);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',err?'danger':'success');save();update();};row.append(button);}$('resources').append(row);}
 const themeObserver=new MutationObserver(()=>{const next=document.documentElement.classList.contains('dark');if(next!==isNight){isNight=next;draw();}});themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
-const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
+const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{if(changingAccount)return;accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{if(changingAccount)return;accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
 
 function specialBuilding(x,y,type,scale,level){const t=TYPES[type];ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);const colors={'Administration':'#c5cbd6','Secours':'#e8cdc3','Énergie':'#839fa0','Ressources':'#b5b488','Industrie':'#a8a5a0','Éducation':'#a9bdcc','Loisirs':'#8eaf78','Commerce':'#e6c69a'};if(['football','tennis','stadium','farm','solar'].includes(type)){diamond(0,0,type==='solar'?'#547f9e':'#7ea46a');ctx.strokeStyle='#f3ecd3';ctx.strokeRect(-12,-6,24,12);if(type==='solar'){for(let i=-10;i<12;i+=7){ctx.beginPath();ctx.moveTo(i,-6);ctx.lineTo(i,6);ctx.stroke();}}else if(type==='farm'){for(let i=-8;i<10;i+=4){ctx.strokeStyle='#c9b76c';ctx.beginPath();ctx.moveTo(-12,i);ctx.lineTo(10,i-10);ctx.stroke();}}}else{const h=(type==='office'?45:type==='largeFactory'?25:20)+(level-1)*9;box(0,8,19,18,h,colors[t.category]||'#c3cba3');if(['coal','factory','largeFactory'].includes(type))box(8,-12,4,4,25,'#898779');if(['supermarket','mall'].includes(type)){poly([[0,8],[22,-3],[30,2],[8,13]],'#8f9891');ctx.strokeStyle='#eee9d5';for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(5+i*6,7-i*3);ctx.lineTo(11+i*6,10-i*3);ctx.stroke();}}ctx.fillStyle=type==='hospital'?'#b35d51':'#38574b';ctx.font='bold 12px sans-serif';ctx.textAlign='center';drawIcon(ctx,type,-8,-h-5,14,isNight?'#d7dee9':'#3f3f46');if(isNight){ctx.fillStyle='#f6d88c';ctx.fillRect(-11,-h+10,4,5);ctx.fillRect(-5,-h+13,3,5);}}ctx.fillStyle=paint('#264e3b');ctx.beginPath();ctx.arc(17,9,7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(level,17,12);ctx.restore();}
 function renderAdmin(st){
@@ -233,7 +238,38 @@ $('city-name').value=state.cityName;
 $('city-name-form').onsubmit=e=>{e.preventDefault();const err=renameCity(state,$('city-name').value);if(!err)$('city-name').value=state.cityName;message(err||'Ville renommée.',err?'danger':'success');save();update();};
 $('open-bank').onclick=()=>openSheet('bank-sheet');
 $('repay-debt').onclick=()=>{const err=repayDebt(state,Math.max(0,Math.min(state.money,stats(state).debt)));message(err||'Dette remboursée.',err?'danger':'success');save();update();};
-function restartGame(){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=initial();guideTarget=null;lastTutorialStep=0;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Logements';$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();save();update();resize();message('Nouvelle partie.','success');}
+function applyCityState(next){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=next;guideTarget=null;lastTutorialStep=state.tutorial.step;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Logements';$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();}
+function restartGame(){applyCityState(initial());save();update();resize();message('Ville recommencée. Les autres villes sont conservées.','success');}
+function setSyncStatus(text,status='neutral'){cloudStatus=text;cloudKind=status;if($('cities-sync'))statusNote('cities-sync',text,status);}
+function renderCities(){
+ $('cities-mode').textContent=cityStore.owner===GUEST?'Villes de cet appareil · mode invité':'Villes de votre compte';
+ statusNote('cities-sync',cloudStatus,cloudKind);$('cities-current').textContent=`Ville active : ${state.cityName}`;
+ $('create-city').disabled=changingAccount;$('import-cities').hidden=cityStore.owner===GUEST;$('import-cities').disabled=changingAccount;$('sync-cities').hidden=!citySync;$('sync-cities').disabled=changingAccount;
+ const key=cityStore.owner+':'+cityStore.cities.map(c=>c.id).join(',');
+ if(key!==cityListKey){cityListKey=key;$('cities-list').replaceChildren();for(const entry of cityStore.cities){const row=document.createElement('article');row.className='city-row';row.dataset.cityId=entry.id;const name=document.createElement('b'),summary=document.createElement('small'),button=document.createElement('button');name.className='city-row-name';summary.className='city-row-summary';button.className=buttonVariants({variant:'outline',size:'sm'});button.onclick=()=>switchCity(entry.id);const info=document.createElement('div');info.append(name,summary);row.append(info,button);$('cities-list').append(row);}}
+ for(const row of document.querySelectorAll('[data-city-id]')){const entry=cityStore.cities.find(c=>c.id===row.dataset.cityId);row.querySelector('.city-row-name').textContent=entry.state.cityName||'Ma ville';row.querySelector('.city-row-summary').textContent=`${money(entry.state.money,true)}${entry.state.gameOver?' · Faillite':''}${entry.dirty&&cityStore.owner!==GUEST?' · En attente':''}`;const active=entry.id===cityStore.active?.id;row.querySelector('button').textContent=active?'Active':'Ouvrir';row.querySelector('button').disabled=active||changingAccount;}
+}
+function switchCity(id){if(changingAccount||!save())return;try{const next=cityStore.select(id);applyCityState(next);save();update();resize();message('Ville ouverte.','success');}catch{message('Ville indisponible. La partie actuelle est conservée.','danger');}}
+function makeSync(client,userId){return new CitySync(client,userId,cityStore,{onStatus:setSyncStatus,onChange:({copies})=>{if(changingAccount||disposed)return;if(copies)message('Une copie locale a été conservée après un conflit.','warning');const entry=cityStore.active;if(entry){const wasOpen=$('cities-sheet').open;applyCityState(cityStore.activeState());save();update();resize();if(wasOpen)openSheet('cities-sheet');}}});}
+async function changeAccount({client,user}){
+ const owner=user?'user:'+user.id:GUEST;if(owner===cityStore.owner)return;
+ save();citySync?.dispose();citySync=null;const generation=++accountGeneration;changingAccount=true;openSheet('cities-sheet');setSyncStatus('Chargement des villes…');
+ cityStore=new CityStore({storage,owner});cityListKey='';renderCities();
+ try{
+  if(user){citySync=makeSync(client,user.id);await citySync.pull();if(disposed||generation!==accountGeneration)return;}
+  else cityStore.ensureGuest();
+ }catch{if(disposed||generation!==accountGeneration)return;setSyncStatus('Cloud indisponible. Vos villes locales restent disponibles.','warning');}
+ if(disposed||generation!==accountGeneration)return;
+ try{if(!cityStore.cities.length)cityStore.create(initial());applyCityState(cityStore.activeState());}
+ catch{setSyncStatus('Stockage indisponible. Votre ancienne partie reste conservée.','danger');changingAccount=false;renderCities();return;}
+ changingAccount=false;save();update();resize();if(user){if(cloudKind!=='warning')setSyncStatus('Synchronisation…');citySync.schedule();}else setSyncStatus('Sauvegarde sur cet appareil.');
+}
+$('open-cities').onclick=()=>{save();renderCities();openSheet('cities-sheet');};
+$('game-over-cities').onclick=()=>{renderCities();openSheet('cities-sheet');};
+$('new-city-form').onsubmit=e=>{e.preventDefault();if(changingAccount||!save())return;const fresh=initial(),err=renameCity(fresh,$('new-city-name').value);if(err){message(err,'danger');return;}try{cityStore.create(fresh);$('new-city-name').value='';applyCityState(fresh);save();update();resize();message('Nouvelle ville créée.','success');}catch{message('Création non enregistrée : stockage indisponible.','danger');}};
+$('import-cities').onclick=()=>{if(changingAccount||cityStore.owner===GUEST||!save())return;try{const guest=new CityStore({storage}),count=cityStore.importGuest(guest);if(count){applyCityState(cityStore.activeState());save();update();resize();}message(count?`${count} ville(s) copiée(s) dans ce compte.`:'Ces villes sont déjà dans ce compte.',count?'success':'neutral');}catch{message('Copie impossible. Les villes d’origine sont conservées.','danger');}};
+$('sync-cities').onclick=()=>{if(!changingAccount&&save())citySync?.refresh();};
+window.addEventListener('online',()=>citySync?.refresh(),{signal:lifetime.signal});
 $('restart').onclick=restartGame;
 $('start-new').onclick=()=>openSheet('reset-sheet');
 $('reset-confirm').onclick=restartGame;
@@ -257,6 +293,6 @@ update();
 document.addEventListener('focusin',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.tile-info[aria-expanded=true]')){e.preventDefault();e.stopPropagation();closeTooltips();}},{capture:true,signal:lifetime.signal});
-const cleanupSettings=mountSettings();
-return ()=>{cleanupSettings();closeTooltips();save();lifetime.abort();clearInterval(ticker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
+const cleanupSettings=mountSettings({onSession:changeAccount});
+return ()=>{save();disposed=true;accountGeneration++;citySync?.dispose();cleanupSettings();closeTooltips();lifetime.abort();clearInterval(ticker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
 }

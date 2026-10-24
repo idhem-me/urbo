@@ -1,0 +1,19 @@
+import assert from 'node:assert/strict';
+import {CityStore,LEGACY_KEY} from './src/city-store.js';
+import {initial} from './src/engine.js';
+const memory=()=>{const map=new Map();return {getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v),map};};
+let seq=1;const idFactory=()=>`00000000-0000-4000-8000-${String(seq++).padStart(12,'0')}`,now=()=>0;
+const storage=memory(),legacy=initial(0);legacy.cityName='Ancienne ville';legacy.money=720000;storage.setItem(LEGACY_KEY,JSON.stringify(legacy));
+const guest=new CityStore({storage,now,idFactory});guest.ensureGuest();assert.equal(guest.cities.length,1);assert.equal(guest.activeState().cityName,'Ancienne ville');assert.equal(guest.activeState().money,720000);assert.equal(storage.getItem(LEGACY_KEY),JSON.stringify(legacy));
+const first=guest.active.id;const secondState=initial(0);secondState.cityName='Deuxième ville';guest.create(secondState);const second=guest.active.id;assert.notEqual(first,second);assert.equal(guest.cities.length,2);
+const changed=guest.activeState();changed.money=800000;guest.save(changed);assert.equal(guest.select(first).money,720000);assert.equal(guest.select(second).money,800000);
+const accountA=new CityStore({storage,owner:'user:A',now,idFactory}),accountB=new CityStore({storage,owner:'user:B',now,idFactory});assert.equal(accountA.cities.length,0);assert.equal(accountB.cities.length,0);assert.equal(accountA.importGuest(guest),2);assert.equal(accountA.importGuest(guest),0);assert.equal(accountB.cities.length,0);assert.equal(guest.cities.length,2);
+const reloaded=new CityStore({storage,owner:'user:A',now,idFactory});assert.equal(reloaded.cities.length,2);assert.equal(reloaded.active.id,accountA.active.id);
+const active=reloaded.active,sent=active.localRevision;reloaded.ack(active.id,1,sent);assert.equal(active.dirty,false);reloaded.save({...active.state,money:900000});reloaded.ack(active.id,2,sent);assert.equal(active.dirty,true);assert.equal(active.serverRevision,2);
+const beforeId=reloaded.active.id,localName=reloaded.active.state.cityName;const copies=reloaded.merge([{id:beforeId,revision:3,state:{...initial(0),cityName:'Cloud'},imported_from:active.originId}]);assert.equal(copies,1);assert.notEqual(reloaded.active.id,beforeId);assert.ok(reloaded.active.state.cityName.startsWith(localName));assert.equal(reloaded.active.state.money,900000);assert.equal(reloaded.cities.find(c=>c.id===beforeId).state.cityName,'Cloud');
+const activeCopy=reloaded.active.id,other=reloaded.cities.find(c=>c.id!==activeCopy);other.dirty=true;other.serverRevision=1;reloaded.merge([{id:other.id,revision:2,state:{...initial(0),cityName:'Autre version'}}]);assert.equal(reloaded.active.id,activeCopy,'Conflit sur une ville inactive ne change pas de ville');
+const snapshot=reloaded.cities.filter(c=>c.id!==activeCopy).map(c=>JSON.stringify(c));reloaded.save(initial(0));assert.deepEqual(reloaded.cities.filter(c=>c.id!==activeCopy).map(c=>JSON.stringify(c)),snapshot,'Reset actif conserve toutes les autres villes');
+const invalid=memory();invalid.setItem('urbo-cities-v1:guest','corrompu');const safe=new CityStore({storage:invalid,now,idFactory});assert.throws(()=>safe.ensureGuest());assert.equal(invalid.getItem('urbo-cities-v1:guest'),'corrompu');
+console.log('Villes : migration, créations, changement, comptes séparés, import unique, écritures concurrentes, copies et reset isolé OK.');
+
+const full=memory(),bounded=new CityStore({storage:full,now,idFactory});bounded.ensureGuest();const beforeFull=JSON.stringify(bounded.data);full.setItem=()=>{throw Error('QuotaExceeded');};assert.throws(()=>bounded.create(initial(0)));assert.equal(JSON.stringify(bounded.data),beforeFull,'Échec de création ne change pas la ville active');assert.throws(()=>bounded.save({...bounded.active.state,money:1}));assert.equal(JSON.stringify(bounded.data),beforeFull,'Échec disque ne remplace pas les données locales');
