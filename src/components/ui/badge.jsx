@@ -1,5 +1,5 @@
 import {cva} from 'class-variance-authority';
 import {cn} from '../../lib/utils';
-const badgeVariants=cva('inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap gap-1', {variants:{variant:{default:'border-transparent bg-primary text-primary-foreground',secondary:'border-transparent bg-secondary text-secondary-foreground',destructive:'border-transparent bg-destructive text-white',outline:'text-foreground'}},defaultVariants:{variant:'default'}});
+const badgeVariants=cva('inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap gap-1', {variants:{variant:{default:'border-transparent bg-primary text-primary-foreground',secondary:'border-transparent bg-secondary text-secondary-foreground',destructive:'border-transparent bg-destructive text-white',outline:'text-foreground',success:'border-success-border bg-success-background text-success-text',warning:'border-warning-border bg-warning-background text-warning-text',danger:'border-danger-border bg-danger-background text-danger-text'}},defaultVariants:{variant:'default'}});
 function Badge({className,variant,...props}){return <span data-slot="badge" className={cn(badgeVariants({variant}),className)} {...props}/>;}
 export {Badge,badgeVariants};

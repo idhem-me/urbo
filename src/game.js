@@ -1,5 +1,6 @@
 import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT} from './engine.js';
 import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
+import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
 import {money,tonnes} from './units';
 import {buttonVariants} from './components/ui/button';
 export function mountGame(){
@@ -15,7 +16,13 @@ function buttonLabel(id,text){const button=$(id),label=button.querySelector('[da
 function openSheet(id){for(const d of document.querySelectorAll('dialog[open]'))if(d.id!==id)d.close();if(!$(id).open)$(id).showModal();for(const b of document.querySelectorAll('[data-open-sheet]'))b.setAttribute('aria-expanded',String(b.dataset.openSheet===id));}
 function closeSheet(id){if($(id).open)$(id).close();}
 function selectedType(){return selected||'house';}
-function message(text,error=false){
+function statusNote(id,text,status='neutral'){
+ const el=$(id);el.dataset.status=status;el.replaceChildren();
+ if(!text)return;
+ const icon=document.createElement('span');icon.innerHTML=iconMarkup((STATUS[status]||STATUS.neutral).icon);icon.setAttribute('aria-hidden','true');
+ const content=document.createElement('span');content.textContent=text;el.append(icon,content);
+}
+function message(text,status='neutral'){
  const short={
  'Choisissez une parcelle verte, en dehors des routes.':'Choisissez une case libre.',
  'Achetez cette parcelle avant de construire.':'Achetez cette case.',
@@ -27,21 +34,21 @@ function message(text,error=false){
  'Fonds insuffisants.':'Pas assez d’argent.',
  'Stock insuffisant (100 t nécessaires).':'Il faut 100 t pour vendre.'
  };
- $('toast').setAttribute('role',error?'alert':'status');$('toast').textContent=short[text]||text;$('toast').dataset.variant=error?'destructive':'default';$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},5000);
+ status=status===true?'danger':status===false?'neutral':status;$('toast').setAttribute('role',status==='danger'?'alert':'status');statusNote('toast',short[text]||text,status);$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},5000);
 }
-function save(){try{localStorage.setItem('rivage-v1',JSON.stringify(state));$('save').textContent='Sauvegarde locale';$('save').removeAttribute('data-error');}catch{$('save').textContent='Sauvegarde indisponible';$('save').dataset.error='true';}}
+function save(){try{localStorage.setItem('rivage-v1',JSON.stringify(state));$('save').textContent='Sauvegarde locale';$('save').dataset.status='success';$('save').classList.add('status-badge');}catch{$('save').textContent='Sauvegarde indisponible';$('save').dataset.status='danger';$('save').classList.add('status-badge');}}
 function update(){
  const st=stats(state),pg=progression(state);
- $('money').textContent=money(state.money,true);$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)}`);
+ $('money').textContent=money(state.money,true);const budget=budgetStatus(state.money,st.income);$('money').parentElement.dataset.status=budget;$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)} · ${STATUS[budget].label}`);$('money').parentElement.title=`Budget : ${STATUS[budget].label}`;
  $('people').textContent=fmt(st.people);
- $('income').textContent=(st.income>=0?'+':'−')+money(Math.abs(st.income),true)+'/min';$('income').parentElement.setAttribute('aria-label',`Solde : ${money(st.income)} par minute`);
+ $('income').textContent=(st.income>=0?'+':'−')+money(Math.abs(st.income),true)+'/min';const flow=incomeStatus(st.income);$('income').parentElement.dataset.status=flow;$('income').parentElement.setAttribute('aria-label',`Solde : ${money(st.income)} par minute · ${STATUS[flow].label}`);$('income').parentElement.title=`Solde : ${STATUS[flow].label}`;
  $('jobs').textContent=`${st.employed} / ${st.jobs}`;
  $('employment').textContent=`${st.unemployment} % sans emploi`;
  $('appeal').textContent=st.attractiveness+' / 100';
  $('housing').textContent=`${st.people} / ${st.homes} places`;
  $('tax').value=state.tax;
  $('economy').textContent=`Par minute : impôts +${money(st.taxes)} · activités +${money(st.commerce)} · frais −${money(st.upkeep)}.`;
- $('income').dataset.negative=String(st.income<0);$('advice').dataset.negative=String(st.income<0);$('advice').textContent=st.income<0?'Dépenses trop élevées.':st.unemployment>0?'Ajoutez des emplois.':st.jobs>st.workers?'Il manque des habitants.':'Emplois équilibrés.';
+ statusNote('advice',st.income<0?'Dépenses trop élevées.':st.unemployment>0?'Ajoutez des emplois.':st.jobs>st.workers?'Il manque des habitants.':'Emplois équilibrés.',st.income<0?'danger':st.unemployment>0||st.jobs>st.workers?'warning':'success');
  renderAdmin(st);inspect();landInspect();
  $('level').textContent=pg.index+1;
  $('progression').textContent=pg.next?`Prochain niveau : ${pg.next.people} habitants.`:'Dernier niveau atteint.';
@@ -54,7 +61,7 @@ function update(){
   b.querySelector('.conditions').textContent=missing.length?`Dès ${(missing[0].match(/\d+/)?.[0]||'plus d’')} habitants`:'';
   b.setAttribute('aria-pressed',String(b.dataset.type===selected));
  });
- const demand=demands(state);for(const [key,value] of Object.entries(demand)){const bar=$('demand-'+key);bar.style.width=value+'%';bar.parentElement.setAttribute('aria-valuenow',String(value));bar.parentElement.setAttribute('aria-valuetext',`${value} sur 100`);}
+ const demand=demands(state);for(const [key,value] of Object.entries(demand)){const bar=$('demand-'+key),status=key==='services'?(value>=60?'danger':value>=20?'warning':'success'):(value>=60?'success':value>=25?'warning':'neutral');bar.parentElement.parentElement.dataset.status=status;bar.parentElement.parentElement.title=`${value} / 100 · ${key==='services'?'Besoins non couverts':value>=60?'Forte demande':value>=25?'Demande moyenne':'Faible demande'}`;bar.style.width=value+'%';bar.parentElement.setAttribute('aria-valuenow',String(value));bar.parentElement.setAttribute('aria-valuetext',`${value} sur 100`);}
  renderPlots();
 }
 
@@ -79,7 +86,7 @@ function place(x,y){
  const existing=state.buildings.find(b=>b.x===x&&b.y===y);
  if(existing){inspected=existing;$('demolition-confirm').hidden=true;inspect();openSheet('building-sheet');return;}
  inspected=null;if(!selected){message('Choisissez un bâtiment dans Construire.');return;}
- const err=build(state,selected,x,y);message(err||`Travaux : ${buildingName(selected)}.`,Boolean(err));save();update();draw();
+ const err=build(state,selected,x,y);message(err||`Travaux : ${buildingName(selected)}.`,err?'danger':'success');save();update();draw();
 }
 const pointers=new Map();let gesture=null,dragged=false;
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});dragged=false;gesture={x:e.clientX,y:e.clientY};if(pointers.size>1)dragged=true;},{signal:lifetime.signal});
@@ -137,39 +144,46 @@ function inspect(){
   if(state.resources.timber<materials.timber||state.resources.stone<materials.stone)reasons.push('Il manque du bois ou de la pierre.');
   if(state.projects.length>=stats(state).capacity)reasons.push('Chantiers pleins.');
  }
- $('upgrade-reason').dataset.error=String(!pending&&(missing.length>0||reasons.length>0));$('upgrade-reason').textContent=pending?'Amélioration en cours.':missing.length?missing.join(' · '):reasons.join(' ');
+ statusNote('upgrade-reason',pending?'Amélioration en cours.':missing.length?missing.join(' · '):reasons.join(' '),pending?'neutral':missing.length||reasons.length?'warning':'neutral');
  $('upgrade').disabled=cost===null||pending||missing.length>0||reasons.length>0;$('demolish').disabled=pending;
 }
-$('upgrade').onclick=()=>{if(!inspected)return;const err=upgrade(state,inspected.x,inspected.y);message(err||'Amélioration en cours.',Boolean(err));save();update();draw();};
+$('upgrade').onclick=()=>{if(!inspected)return;const err=upgrade(state,inspected.x,inspected.y);message(err||'Amélioration en cours.',err?'danger':'success');save();update();draw();};
 $('demolish').onclick=()=>{$('demolition-confirm').hidden=false;};
 $('cancel-demolish').onclick=()=>{$('demolition-confirm').hidden=true;};
-$('confirm-demolish').onclick=()=>{if(!inspected)return;const err=demolish(state,inspected.x,inspected.y);if(!err){inspected=null;closeSheet('building-sheet');}message(err||'Bâtiment détruit.',Boolean(err));save();update();draw();};
+$('confirm-demolish').onclick=()=>{if(!inspected)return;const err=demolish(state,inspected.x,inspected.y);if(!err){inspected=null;closeSheet('building-sheet');}message(err||'Bâtiment détruit.',err?'danger':'success');save();update();draw();};
 $('cancel-placement').onclick=()=>{selected=null;$('placement').hidden=true;message('Construction annulée.');renderCatalog();update();};
-$('tax').onchange=e=>{setTax(state,e.target.value);save();update();message('Impôts modifiés.');};
+$('tax').onchange=e=>{setTax(state,e.target.value);save();update();message('Impôts modifiés.','success');};
 $('resources').replaceChildren();
-for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',Boolean(err));save();update();};row.append(button);}$('resources').append(row);}
+for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);const indicator=document.createElement('span');indicator.id='stock-status-'+key;indicator.className='stock-indicator';row.append(indicator);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',err?'danger':'success');save();update();};row.append(button);}$('resources').append(row);}
 const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
 
 function specialBuilding(x,y,type,scale,level){const t=TYPES[type];ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);const colors={'Administration':'#c5cbd6','Secours':'#e8cdc3','Énergie':'#839fa0','Ressources':'#b5b488','Industrie':'#a8a5a0','Éducation':'#a9bdcc','Loisirs':'#8eaf78','Commerce':'#e6c69a'};if(['football','tennis','stadium','farm','solar'].includes(type)){diamond(0,0,type==='solar'?'#547f9e':'#7ea46a');ctx.strokeStyle='#f3ecd3';ctx.strokeRect(-12,-6,24,12);if(type==='solar'){for(let i=-10;i<12;i+=7){ctx.beginPath();ctx.moveTo(i,-6);ctx.lineTo(i,6);ctx.stroke();}}else if(type==='farm'){for(let i=-8;i<10;i+=4){ctx.strokeStyle='#c9b76c';ctx.beginPath();ctx.moveTo(-12,i);ctx.lineTo(10,i-10);ctx.stroke();}}}else{const h=(type==='office'?45:type==='largeFactory'?25:20)+(level-1)*9;box(0,8,19,18,h,colors[t.category]||'#c3cba3');if(['coal','factory','largeFactory'].includes(type))box(8,-12,4,4,25,'#898779');if(['supermarket','mall'].includes(type)){poly([[0,8],[22,-3],[30,2],[8,13]],'#8f9891');ctx.strokeStyle='#eee9d5';for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(5+i*6,7-i*3);ctx.lineTo(11+i*6,10-i*3);ctx.stroke();}}ctx.fillStyle=type==='hospital'?'#b35d51':'#38574b';ctx.font='bold 12px sans-serif';ctx.textAlign='center';drawIcon(ctx,type,-8,-h-5,14,'#3f3f46');}ctx.fillStyle='#264e3b';ctx.beginPath();ctx.arc(17,9,7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(level,17,12);ctx.restore();}
 function renderAdmin(st){
- $('services').innerHTML=Object.entries({admin:'Mairie',fire:'Pompiers',police:'Police',ambulance:'Ambulances',health:'Hôpital'}).map(([key,label])=>`<div><span class="service-label">${iconMarkup(key==='admin'?'townhall':key==='health'?'hospital':key)}${label}</span><b>${st.coverage[key]} %</b></div>`).join('');
- $('utilities').textContent=`Énergie : ${Math.round(st.energyRatio*100)} % des besoins. Pollution : ${st.pollution}.`;
+ $('services').innerHTML=Object.entries({admin:'Mairie',fire:'Pompiers',police:'Police',ambulance:'Ambulances',health:'Hôpital'}).map(([key,label])=>`<div><span class="service-label">${iconMarkup(key==='admin'?'townhall':key==='health'?'hospital':key)}${label}</span><span class="service-result"><b>${st.coverage[key]} %</b>${statusBadge(coverageStatus(st.coverage[key]))}</span></div>`).join('');
+ $('utilities').innerHTML=`Énergie : ${Math.round(st.energyRatio*100)} % ${statusBadge(energyStatus(st.energyRatio))} · Pollution : ${st.pollution}.`;
  $('education').textContent=`${st.educated} actifs formés. ${st.officeEmployed} / ${st.educatedJobs} emplois qualifiés occupés. Nourriture : ${st.foodCovered?'disponible':'épuisée'}.`;
  $('projects-title').textContent=`Chantiers · ${state.projects.length} / ${st.capacity}`;
  $('projects').replaceChildren();
  if(!state.projects.length){const p=document.createElement('p');p.textContent='Aucun chantier.';$('projects').append(p);}
  for(const p of state.projects){const line=document.createElement('p');line.textContent=`${buildingName(p.type)} · niv. ${p.level} · ${Math.max(0,Math.ceil((p.finish-state.last)/1000))} s`;$('projects').append(line);}
- for(const key of Object.keys(RESOURCES))$('stock-'+key).textContent=tonnes(state.resources[key]);
+ const buildNeeds=projectCost(selectedType(),1,state);
+ for(const key of Object.keys(RESOURCES)){
+  $('stock-'+key).textContent=tonnes(state.resources[key]);
+  const rate=key==='food'?st.foodNeed:state.buildings.reduce((total,b)=>total+(effects(b).consume[key]||0)*Math.max(st.productivity,.1),0);
+  const needed=['timber','stone'].includes(key)?buildNeeds[key]:0;
+  $('stock-status-'+key).innerHTML=statusBadge(stockStatus(state.resources[key],{needed,rate}));
+ }
+ $('city-status').innerHTML=[['Budget',budgetStatus(state.money,st.income)],['Solde / min',incomeStatus(st.income)],['Énergie',energyStatus(st.energyRatio)],['Attrait',st.attractiveness>=65?'success':st.attractiveness>=40?'warning':'danger']].map(([label,status])=>`<div class="status-row"><span>${label}</span>${statusBadge(status)}</div>`).join('');
 }
 function landInspect(){
  const p=selectedLand;
  if(!p)return;
- const connected=adjacentLand(state,p.x,p.y),price=landPrice(state);$('land-details').dataset.error=String(!connected||state.money<price);
- $('land-details').textContent=`Case ${p.x+1}, ${p.y+1} · ${money(price)}.${!connected?' Achetez d’abord une case voisine.':state.money<price?' Pas assez d’argent.':''}`;
+ const connected=adjacentLand(state,p.x,p.y),price=landPrice(state);
+ statusNote('land-details',`Case ${p.x+1}, ${p.y+1} · ${money(price)}.${!connected?' Achetez d’abord une case voisine.':state.money<price?' Pas assez d’argent.':''}`,!connected?'neutral':state.money<price?'warning':'neutral');
  buttonLabel('buy-land',`Acheter · ${money(price)}`);
  $('buy-land').disabled=!connected||state.money<price;
 }
-$('buy-land').onclick=()=>{if(!selectedLand)return;const err=buyLand(state,selectedLand.x,selectedLand.y);message(err||'Case achetée.',Boolean(err));if(!err){selectedLand=null;closeSheet('land-sheet');}save();update();draw();};
+$('buy-land').onclick=()=>{if(!selectedLand)return;const err=buyLand(state,selectedLand.x,selectedLand.y);message(err||'Case achetée.',err?'danger':'success');if(!err){selectedLand=null;closeSheet('land-sheet');}save();update();draw();};
 
 
 for(const [key,label,icon] of [['residential','Résidence','house'],['industrial','Industrie','factory'],['office','Bureaux','office'],['services','Services','police']]){

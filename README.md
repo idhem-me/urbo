@@ -49,7 +49,7 @@ Les sauvegardes précédentes sont converties une seule fois : un ancien point d
 
 Choisir un bâtiment dans **Construire**, puis toucher une case libre. Toucher un bâtiment pour l’améliorer, ou une case + pour l’acheter. Les menus **Ville** et **Stocks** affichent les services, le budget et le marché. La liste des cases permet aussi de jouer au clavier.
 
-L’interface utilise une palette zinc (blanc, noir, gris). Seules la carte et les alertes rouges utilisent de la couleur. Aucun emoji : les services, ressources, boutons et bâtiments utilisent les mêmes icônes SVG Lucide. Elles sont servies depuis l’application, sans CDN. Les couleurs destructrices restent disponibles dans les variantes shadcn/ui et servent aux erreurs et aux déficits. Il n’y a pas encore d’action de suppression de bâtiment.
+L’interface utilise une palette zinc (blanc, noir, gris). La carte et les indicateurs sémantiques utilisent de la couleur : vert (OK), orange (À surveiller), rouge (Critique). Aucun emoji : les services, ressources, boutons et bâtiments utilisent les mêmes icônes SVG Lucide. Elles sont servies depuis l’application, sans CDN. Les couleurs destructrices restent disponibles dans les variantes shadcn/ui et servent aux erreurs et aux déficits. Il n’y a pas encore d’action de suppression de bâtiment.
 
 ## Contenu du prototype
 
@@ -90,3 +90,7 @@ npm run build
 ```
 
 Le rendu sur iPhone et Android reste à vérifier sur appareil réel. Les services ont une couverture globale, sans trajet ni intervention animée. La population se rééquilibre immédiatement. Il n’y a pas encore de démolition, remboursement, réseau routier modifiable ou synchronisation entre appareils.
+
+## Tokens d’état
+
+Les tokens `success`, `warning` et `danger` sont partagés par le CSS, Tailwind et les composants shadcn/ui. Les seuils sont centralisés dans `src/status.js`. Les boutons destructifs restent rouges via un alias de `danger`. Voir `docs/DESIGN_TOKENS.md`.
