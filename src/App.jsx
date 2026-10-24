@@ -10,7 +10,7 @@ export default function App(){
  useEffect(()=>{let disposed=false,cleanup;import('./game.js').then(({mountGame})=>{if(!disposed)cleanup=mountGame();}).catch(error=>{if(disposed)return;const status=document.getElementById('toast');status.textContent='Le jeu n’a pas démarré.';status.dataset.status='danger';status.setAttribute('role','alert');console.error(error);});return()=>{disposed=true;cleanup?.();};},[]);
  return <main className="game-screen" aria-label="Urbo">
   <div className="world"><canvas id="map" tabIndex={0} aria-label="Ville. Glissez pour déplacer la carte. Au clavier : flèches pour choisir une case, Entrée pour agir. Touchez un bâtiment pour le gérer."/></div>
-  <section className="hud" aria-label="Indicateurs">
+  <div className="hud-stack"><section className="hud" aria-label="Indicateurs">
    <div className="counters">
     <div className="counter" role="group" title="Budget en euros" aria-label="Budget"><Icon name="money"/><span id="money"/></div>
     <div className="counter" role="group" title="Habitants" aria-label="Habitants"><Icon name="people"/><span id="people"/></div>
@@ -21,10 +21,12 @@ export default function App(){
     <div id="demand" className="demand-grid"/>
    </div>
   </section>
-  <div className="map-tools"><Button id="settings" variant="outline" size="icon" aria-label="Réglages"><Icon name="settings"/></Button><Button id="zoom" variant="outline" size="icon" aria-label="Zoom"><Icon name="plus"/></Button></div>
-  <div className="activity-dock"><section id="tutorial" className="tutorial-card" aria-label="Début guidé" hidden><div className="tutorial-heading"><span id="guide-step"/><Button id="skip-tutorial" variant="ghost" size="icon" aria-label="Passer le guide"><Icon name="close"/></Button></div><h3 id="guide-title" aria-live="polite"/><p id="guide-text"/><small id="guide-reward"/><Button id="guide-action" variant="default">Commencer</Button></section>
+  <div className="hud-feedback">
   <p id="toast" role="status">Choisissez Construire pour commencer.</p>
   <section id="construction-status" className="construction-progress" hidden aria-label="Chantier en cours"><button id="construction-open" type="button" aria-label="Voir les chantiers"/><span className="construction-heading"><span className="construction-label"><Icon name="build"/><span id="construction-name"/></span><span id="construction-time"/></span><span className="construction-track" id="construction-track" role="progressbar" aria-label="Progression du chantier" aria-valuemin={0} aria-valuemax={100}><i id="construction-fill"/></span><span className="construction-footer"><span id="construction-percent"/><span id="construction-count"/></span></section>
+  </div></div>
+  <div className="map-tools"><Button id="settings" variant="outline" size="icon" aria-label="Réglages"><Icon name="settings"/></Button><Button id="zoom" variant="outline" size="icon" aria-label="Zoom"><Icon name="plus"/></Button></div>
+  <div className="activity-dock"><section id="tutorial" className="tutorial-card" aria-label="Début guidé" hidden><div className="tutorial-heading"><span id="guide-step"/><Button id="skip-tutorial" variant="ghost" size="icon" aria-label="Passer le guide"><Icon name="close"/></Button></div><h3 id="guide-title" aria-live="polite"/><p id="guide-text"/><small id="guide-reward"/><Button id="guide-action" variant="default">Commencer</Button></section>
   <div id="placement" className="placement" hidden><span id="placement-label"/><Button id="cancel-placement" variant="ghost" size="icon" aria-label="Annuler la construction"><Icon name="close"/></Button></div></div>
   <nav className="bottom-nav" aria-label="Menu">
    <Button data-open-sheet="build-sheet"><Icon name="build"/>Construire</Button>

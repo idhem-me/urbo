@@ -191,3 +191,14 @@ p{margin:10px 0;line-height:1.6}h2{font-size:18px;font-weight:600;margin:0}h3{fo
 #construction-status{position:relative}
 #construction-open{position:absolute;inset:0;z-index:1;width:100%;height:100%;min-height:0;padding:0;border:0;border-radius:7px;background:transparent;cursor:pointer}
 #construction-open:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+
+/* Keep map feedback anchored below the indicators, independent of bottom controls. */
+.hud-stack{position:absolute;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));width:min(420px,calc(100% - 72px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.hud-stack .hud{position:static;width:100%;flex-shrink:0}
+.hud-feedback{display:flex;flex-direction:column;gap:8px;min-width:0}
+.game-screen .hud-feedback #toast{position:static;inset:auto;transform:none;width:100%;max-width:none;text-align:left;overflow-wrap:anywhere;pointer-events:none}
+.hud-feedback .construction-heading{min-width:0}
+.hud-feedback .construction-label{min-width:0}
+.hud-feedback #construction-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#map{cursor:grab}
+@media(min-width:760px){.hud-stack{top:20px;left:20px}}
