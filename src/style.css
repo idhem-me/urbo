@@ -237,3 +237,5 @@ p{margin:10px 0;line-height:1.6}h2{font-size:18px;font-weight:600;margin:0}h3{fo
 #city-sheet .city-bank>div{min-width:0}
 #city-sheet .city-details.city-section{margin:0;padding:10px 0}
 #city-sheet .tax-controls{gap:8px}
+
+.save-actions{display:flex;flex-wrap:wrap;gap:8px}.save-actions>button{flex:1 1 180px}

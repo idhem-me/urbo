@@ -149,3 +149,7 @@ La recherche ignore les accents et les majuscules. Saisir un mot cherche dans to
 Le haut de l’écran est une seule tuile : compteurs en colonnes fixes, chiffres tabulaires et indicateurs regroupés. Les grands montants restent compacts et leur valeur exacte est disponible dans le libellé accessible et l’infobulle.
 
 Une barre persistante suit le chantier qui finit en premier : nom, pourcentage et temps restant. Si d’autres chantiers sont actifs, elle indique leur nombre ; toucher la barre ouvre leur détail dans Ville. À la livraison, la barre passe au chantier suivant ou disparaît avec une confirmation courte. Le guide, les messages et le placement sont empilés sans se chevaucher. Le suivi conserve les horaires de départ et la durée lors des sauvegardes. Aucun changement de base Supabase n’est requis pour cette version.
+
+### Importer une ville
+
+Dans Réglages → Sauvegarde → Importer une sauvegarde, choisir le fichier JSON exporté depuis Urbo (maximum 2 Mo). L’import ajoute une nouvelle ville dans le compte actuellement ouvert ou dans les villes locales si vous êtes déconnecté. La ville précédente reste disponible dans Mes villes. Les anciens formats sont migrés ; un fichier invalide est refusé sans créer de partie vide. Les villes importées suivent la synchronisation habituelle si le compte Google et le cloud sont configurés.

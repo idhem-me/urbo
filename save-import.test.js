@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {initial,restore,accrue} from './src/engine.js';
+import {readSaveFile,MAX_SAVE_BYTES} from './src/save-import.js';
+import {CityStore} from './src/city-store.js';
+const file=text=>({size:Buffer.byteLength(text),text:async()=>text});
+const source=initial(0);source.cityName='Ville importée';source.money=765432;accrue(source,0);
+const imported=await readSaveFile(file(JSON.stringify(source)),()=>0);assert.deepEqual(imported,source);
+assert.deepEqual(await readSaveFile(file('\uFEFF'+JSON.stringify(source)),()=>0),source);
+for(const text of ['bad json','{}','null','[]',JSON.stringify({...source,version:999}),JSON.stringify({...source,buildings:[{type:'unknown',x:1,y:1,level:1}]})])await assert.rejects(readSaveFile(file(text),()=>0),/sauvegarde Urbo valide/);
+assert.deepEqual(restore('bad json',0),initial(0),'Ordinary local restoration keeps its existing fallback');
+let read=false;await assert.rejects(readSaveFile({size:MAX_SAVE_BYTES+1,text:async()=>{read=true;return '';}}),/volumineux/);assert.equal(read,false);
+await assert.rejects(readSaveFile({size:1,text:async()=>{throw Error();}}),/Lecture/);
+const legacy={...source,version:8};legacy.buildings=[{type:'house',x:2,y:2,level:1}];legacy.owned=['2,2'];
+const migrated=await readSaveFile(file(JSON.stringify(legacy)),()=>0);assert.equal(migrated.version,10);assert.equal(migrated.money,source.money);assert.equal(migrated.buildings.length,1);assert.ok(migrated.buildings[0].x>=10);
+const map=new Map(),storage={getItem:k=>map.get(k),setItem:(k,v)=>map.set(k,v)};
+const store=new CityStore({storage,now:()=>0});store.ensureGuest();const previous=structuredClone(store.active);store.create(imported);assert.equal(store.cities.length,2);assert.notEqual(store.active.id,previous.id);assert.deepEqual(store.cities.find(c=>c.id===previous.id),previous);assert.equal(store.active.state.cityName,'Ville importée');
+const snapshot=JSON.stringify(store.data);storage.setItem=()=>{throw Error('QuotaExceeded');};assert.throws(()=>store.create(imported));assert.equal(JSON.stringify(store.data),snapshot);
+console.log('Import : export compatible, JSON invalide refusé, taille, migration, nouvelle ville et échec disque sans perte validés.');

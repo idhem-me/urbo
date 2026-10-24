@@ -3,6 +3,7 @@ import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
 import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
 import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS,PRIMARY_CATEGORIES,PRIMARY_ICONS,searchCatalog} from './catalog';
 import {CityStore,GUEST} from './city-store';
+import {readSaveFile} from './save-import';
 import {CitySync} from './city-sync';
 import {mountSettings} from './settings';
 import {constructionProgress,constructionKey} from './construction';
@@ -267,6 +268,22 @@ function renderBank(st){
  const repay=Math.max(0,Math.min(state.money,st.debt));$('repay-info').textContent=`Remboursement anticipé possible : ${money(repay)}.`;$('repay-debt').disabled=Boolean(state.gameOver)||repay<=0;
 }
 $('construction-open').onclick=()=>{openSheet('city-sheet');$('projects-title').scrollIntoView({block:'start'});};
+let importingSave=false;
+$('import-save').onclick=()=>{if(changingAccount||importingSave)return;$('import-save-file').value='';$('import-save-file').click();};
+$('import-save-file').onchange=async()=>{
+ const file=$('import-save-file').files?.[0];if(!file||importingSave||changingAccount)return;
+ const generation=accountGeneration,store=cityStore;importingSave=true;$('import-save').disabled=true;
+ $('import-save-status').hidden=false;statusNote('import-save-status','Vérification du fichier…');
+ try{
+  const imported=await readSaveFile(file);
+  if(disposed||generation!==accountGeneration||store!==cityStore||changingAccount)return;
+  if(!save())throw new Error('Sauvegarde locale indisponible. Import annulé.');
+  try{cityStore.create(imported);}catch{throw new Error('Import non enregistré : stockage indisponible. Votre ville est conservée.');}applyCityState(imported);save();update();resize();
+  openSheet('settings-sheet');statusNote('import-save-status','Ville importée. Votre autre ville est conservée.','success');
+  message('Ville importée.','success');
+ }catch(error){if(!disposed&&generation===accountGeneration&&store===cityStore)statusNote('import-save-status',error.message||'Import impossible. Votre ville est conservée.','danger');}
+ finally{importingSave=false;if(!disposed){$('import-save').disabled=false;$('import-save-file').value='';}}
+};
 $('settings').onclick=()=>openSheet('settings-sheet');
 $('city-name').value=state.cityName;
 $('city-name-form').onsubmit=e=>{e.preventDefault();const err=renameCity(state,$('city-name').value);if(!err)$('city-name').value=state.cityName;message(err||'Ville renommée.',err?'danger':'success');save();update();};
