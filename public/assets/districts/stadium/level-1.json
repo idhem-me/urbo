@@ -1,0 +1,85 @@
+{
+  "id": 45,
+  "name": "quartier stade niveau 1",
+  "family": "stade",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 16,
+      "bounds": [
+        2.3,
+        12.35,
+        10.65,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "stadium-pitch",
+      "bounds": [
+        4.3,
+        4.4,
+        7.5,
+        6.2
+      ]
+    },
+    {
+      "type": "stand",
+      "bounds": [
+        2.5,
+        3.5,
+        1.5,
+        7.8
+      ]
+    },
+    {
+      "type": "stand",
+      "bounds": [
+        12.1,
+        3.5,
+        1.5,
+        7.8
+      ]
+    },
+    {
+      "type": "stand",
+      "bounds": [
+        4,
+        2.5,
+        8.1,
+        1.5
+      ]
+    },
+    {
+      "type": "stand",
+      "bounds": [
+        4,
+        10.95,
+        8.1,
+        1.1
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 0,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 16,
+    "sportsSurfaces": 1,
+    "trees": 4
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

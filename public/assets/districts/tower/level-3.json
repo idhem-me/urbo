@@ -1,0 +1,256 @@
+{
+  "id": 6,
+  "name": "quartier residence niveau 3",
+  "family": "residence",
+  "level": 3,
+  "status": "à valider",
+  "buildings": [
+    {
+      "id": "apartment-0",
+      "type": "apartment",
+      "u": 0.65,
+      "v": 4.4,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 5,
+      "door": [
+        1.48,
+        6.7
+      ]
+    },
+    {
+      "id": "apartment-1",
+      "type": "apartment",
+      "u": 9.4,
+      "v": 4.4,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 6,
+      "door": [
+        10.23,
+        6.7
+      ]
+    },
+    {
+      "id": "apartment-2",
+      "type": "apartment",
+      "u": 0.65,
+      "v": 9.5,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 5,
+      "door": [
+        1.48,
+        9.5
+      ]
+    },
+    {
+      "id": "apartment-3",
+      "type": "apartment",
+      "u": 9.4,
+      "v": 9.5,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 6,
+      "door": [
+        10.23,
+        9.5
+      ]
+    },
+    {
+      "id": "apartment-4",
+      "type": "apartment",
+      "u": 3.9,
+      "v": 4.4,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 5,
+      "door": [
+        4.7299999999999995,
+        6.7
+      ]
+    },
+    {
+      "id": "apartment-5",
+      "type": "apartment",
+      "u": 12.6,
+      "v": 4.4,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 6,
+      "door": [
+        13.43,
+        6.7
+      ]
+    },
+    {
+      "id": "apartment-6",
+      "type": "apartment",
+      "u": 3.9,
+      "v": 9.5,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 5,
+      "door": [
+        4.7299999999999995,
+        9.5
+      ]
+    },
+    {
+      "id": "apartment-7",
+      "type": "apartment",
+      "u": 12.6,
+      "v": 9.5,
+      "width": 2.2,
+      "depth": 2.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 6,
+      "door": [
+        13.43,
+        9.5
+      ]
+    }
+  ],
+  "access": [
+    {
+      "building": "apartment-0",
+      "walkway": [
+        1.37,
+        6.7,
+        0.22,
+        0.2999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "apartment-1",
+      "walkway": [
+        10.120000000000001,
+        6.7,
+        0.22,
+        0.2999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "apartment-2",
+      "walkway": [
+        1.37,
+        9,
+        0.22,
+        0.5
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "apartment-3",
+      "walkway": [
+        10.120000000000001,
+        9,
+        0.22,
+        0.5
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "apartment-4",
+      "walkway": [
+        4.62,
+        6.7,
+        0.22,
+        0.2999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "apartment-5",
+      "walkway": [
+        13.32,
+        6.7,
+        0.22,
+        0.2999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "apartment-6",
+      "walkway": [
+        4.62,
+        9,
+        0.22,
+        0.5
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "apartment-7",
+      "walkway": [
+        13.32,
+        9,
+        0.22,
+        0.5
+      ],
+      "roadEdgeV": 9
+    }
+  ],
+  "parks": [
+    [
+      9.4,
+      0.6,
+      5.8,
+      2.1
+    ],
+    [
+      0.55,
+      0.6,
+      5.8,
+      2.1
+    ]
+  ],
+  "parking": [
+    {
+      "type": "collective",
+      "spaces": 7,
+      "bounds": [
+        0.7,
+        13.8,
+        5.199999999999999,
+        1.3
+      ]
+    },
+    {
+      "type": "collective",
+      "spaces": 7,
+      "bounds": [
+        9.4,
+        13.8,
+        5.2,
+        1.3
+      ]
+    }
+  ],
+  "counts": {
+    "houses": 0,
+    "apartments": 8,
+    "parks": 2
+  },
+  "overhang": {
+    "roofMaxGroundUnits": 0.08,
+    "verticalProjection": "within viewBox for this batch"
+  }
+}

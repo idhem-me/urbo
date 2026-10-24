@@ -1,0 +1,92 @@
+{
+  "id": 47,
+  "name": "quartier foot niveau 1",
+  "family": "foot",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "changing-rooms",
+      "bounds": [
+        2.4,
+        10.4,
+        2.8,
+        2.9
+      ],
+      "floors": 1,
+      "height": 25,
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        6.2,
+        12.3,
+        1.2,
+        1.3
+      ],
+      "front": "v-"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        8.5,
+        12.3,
+        1.2,
+        1.3
+      ],
+      "front": "v-"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        10.8,
+        12.3,
+        1.2,
+        1.3
+      ],
+      "front": "v-"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 10,
+      "bounds": [
+        6.2,
+        10.3,
+        6.75,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "football-pitch",
+      "bounds": [
+        2.4,
+        2.4,
+        10.8,
+        7
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 4,
+    "houses": 3,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 10,
+    "sportsSurfaces": 1,
+    "trees": 4
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "id": 55,
+  "name": "quartier supermarche niveau 1",
+  "family": "supermarche",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "supermarket",
+      "bounds": [
+        2.3,
+        2.4,
+        4.8,
+        4.7
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    },
+    {
+      "type": "supermarket-east",
+      "bounds": [
+        8,
+        2.4,
+        5.5,
+        5.5
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 48,
+      "bounds": [
+        2.3,
+        9.6,
+        10.65,
+        3.9000000000000004
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "shopfront",
+      "bounds": [
+        2.3,
+        7.1,
+        4.8,
+        0.22
+      ]
+    },
+    {
+      "type": "shopfront",
+      "bounds": [
+        8,
+        7.9,
+        5.5,
+        0.22
+      ]
+    },
+    {
+      "type": "glazed-entrance",
+      "bounds": [
+        9,
+        7.9,
+        2.4,
+        0.5
+      ]
+    },
+    {
+      "type": "glazed-entrance",
+      "bounds": [
+        3.3,
+        7.1,
+        2,
+        0.5
+      ]
+    },
+    {
+      "type": "shopping-carts",
+      "count": 5,
+      "v": 8.1
+    }
+  ],
+  "counts": {
+    "buildings": 2,
+    "houses": 0,
+    "mixedBuildings": 0,
+    "parks": 0,
+    "parkingSpaces": 48,
+    "trees": 5
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

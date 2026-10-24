@@ -1,0 +1,44 @@
+{
+  "id": 61,
+  "name": "quartier foret",
+  "family": "foret",
+  "status": "à valider",
+  "features": [
+    {
+      "type": "forest-clearing",
+      "center": [
+        6.7,
+        8.4
+      ],
+      "radius": [
+        1.25,
+        1.4
+      ]
+    },
+    {
+      "type": "forest-clearing",
+      "center": [
+        11,
+        4.4
+      ],
+      "radius": [
+        0.9,
+        1
+      ]
+    }
+  ],
+  "counts": {
+    "trees": 163,
+    "constructionMachines": 0,
+    "roads": false
+  },
+  "connections": {},
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ],
+    "note": "Le feuillage peut dépasser visuellement sans modifier l’emprise au sol."
+  }
+}

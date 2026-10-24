@@ -1,0 +1,87 @@
+{
+  "id": 44,
+  "name": "quartier parc niveau 2",
+  "family": "parc",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "park-cafe",
+      "bounds": [
+        10.4,
+        3.4,
+        2.6,
+        1.9
+      ],
+      "floors": 1,
+      "height": 25,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      2.1,
+      2.1,
+      11.8,
+      11.8
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "curved-garden-path-network",
+      "bounds": [
+        2.1,
+        2.1,
+        11.8,
+        11.8
+      ]
+    },
+    {
+      "type": "fountain-pond",
+      "center": [
+        8,
+        8
+      ],
+      "radius": [
+        2.5,
+        1.7
+      ]
+    },
+    {
+      "type": "garden-kiosk",
+      "center": [
+        4.4,
+        5
+      ],
+      "radius": 0.65,
+      "height": 22
+    },
+    {
+      "type": "playground",
+      "bounds": [
+        3,
+        8.7,
+        2.2,
+        1.6
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 1,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "sportsSurfaces": 0,
+    "trees": 20
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

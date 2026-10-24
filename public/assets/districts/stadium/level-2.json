@@ -1,0 +1,101 @@
+{
+  "id": 46,
+  "name": "quartier stade niveau 2",
+  "family": "stade",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [],
+  "parks": [],
+  "parking": [],
+  "features": [
+    {
+      "type": "stadium-pitch",
+      "bounds": [
+        4.5,
+        4.8,
+        7,
+        6.4
+      ]
+    },
+    {
+      "type": "covered-stand",
+      "bounds": [
+        2.15,
+        2.15,
+        2,
+        11.7
+      ],
+      "tiers": 2,
+      "rows": 8,
+      "roofHeight": 89
+    },
+    {
+      "type": "covered-stand",
+      "bounds": [
+        11.85,
+        2.15,
+        2,
+        11.7
+      ],
+      "tiers": 2,
+      "rows": 8,
+      "roofHeight": 89
+    },
+    {
+      "type": "covered-stand",
+      "bounds": [
+        4.15,
+        2.15,
+        7.7,
+        2.25
+      ],
+      "tiers": 2,
+      "rows": 8,
+      "roofHeight": 89
+    },
+    {
+      "type": "covered-stand",
+      "bounds": [
+        4.15,
+        11.6,
+        7.7,
+        2.25
+      ],
+      "tiers": 2,
+      "rows": 8,
+      "roofHeight": 89
+    },
+    {
+      "type": "stadium-lighting",
+      "masts": 4,
+      "height": 161
+    },
+    {
+      "type": "large-stadium-bowl",
+      "bounds": [
+        2.15,
+        2.15,
+        11.7,
+        11.7
+      ],
+      "parking": false
+    }
+  ],
+  "counts": {
+    "buildings": 0,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 0,
+    "sportsSurfaces": 1,
+    "trees": 4
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

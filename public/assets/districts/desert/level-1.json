@@ -1,0 +1,47 @@
+{
+  "id": 60,
+  "name": "quartier desert",
+  "family": "desert",
+  "status": "à valider",
+  "features": [
+    {
+      "type": "rock",
+      "u": 2.2,
+      "v": 2.8
+    },
+    {
+      "type": "rock",
+      "u": 12.6,
+      "v": 3.8
+    },
+    {
+      "type": "rock",
+      "u": 3.8,
+      "v": 12.4
+    },
+    {
+      "type": "rock",
+      "u": 11.5,
+      "v": 13.6
+    },
+    {
+      "type": "rock",
+      "u": 7.2,
+      "v": 7.6
+    }
+  ],
+  "counts": {
+    "trees": 0,
+    "constructionMachines": 0,
+    "roads": false
+  },
+  "connections": {},
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ],
+    "note": "Le feuillage peut dépasser visuellement sans modifier l’emprise au sol."
+  }
+}

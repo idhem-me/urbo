@@ -1,0 +1,114 @@
+{
+  "id": 59,
+  "name": "quartier construction",
+  "family": "construction",
+  "status": "à valider",
+  "features": [
+    {
+      "type": "building-frame",
+      "bounds": [
+        0.8,
+        1.1,
+        5.4,
+        5.1
+      ],
+      "storeys": 3
+    },
+    {
+      "type": "foundation",
+      "bounds": [
+        9.6,
+        9.6,
+        5.1,
+        4.8
+      ]
+    },
+    {
+      "type": "excavation",
+      "bounds": [
+        0.8,
+        9.6,
+        5.4,
+        4.7
+      ]
+    },
+    {
+      "type": "tower-crane",
+      "height": 156,
+      "base": [
+        11.1,
+        3.3
+      ]
+    },
+    {
+      "type": "construction-machine",
+      "u": 9.6,
+      "v": 4.7
+    },
+    {
+      "type": "construction-machine",
+      "u": 12.4,
+      "v": 5.1
+    },
+    {
+      "type": "construction-machine",
+      "u": 2.2,
+      "v": 11.5
+    }
+  ],
+  "counts": {
+    "trees": 3,
+    "constructionMachines": 3,
+    "roads": true
+  },
+  "connections": {
+    "uMin": {
+      "road": [
+        7.4,
+        8.6
+      ],
+      "sidewalk": [
+        7,
+        9
+      ]
+    },
+    "uMax": {
+      "road": [
+        7.4,
+        8.6
+      ],
+      "sidewalk": [
+        7,
+        9
+      ]
+    },
+    "vMin": {
+      "road": [
+        7.4,
+        8.6
+      ],
+      "sidewalk": [
+        7,
+        9
+      ]
+    },
+    "vMax": {
+      "road": [
+        7.4,
+        8.6
+      ],
+      "sidewalk": [
+        7,
+        9
+      ]
+    }
+  },
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ],
+    "note": "Le feuillage peut dépasser visuellement sans modifier l’emprise au sol."
+  }
+}

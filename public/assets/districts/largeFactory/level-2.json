@@ -1,0 +1,160 @@
+{
+  "id": 40,
+  "name": "quartier grande-usine niveau 2",
+  "family": "grande-usine",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "heavy-industry-main",
+      "bounds": [
+        2.3,
+        2.4,
+        8,
+        7.8
+      ],
+      "floors": 4,
+      "height": 85,
+      "front": "v+"
+    },
+    {
+      "type": "second-production-hall",
+      "bounds": [
+        10.3,
+        6.3,
+        3.1,
+        3.9
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "industrial-warehouse",
+      "bounds": [
+        2.3,
+        12,
+        5.1,
+        1.5
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    },
+    {
+      "type": "industrial-office",
+      "bounds": [
+        9,
+        12,
+        4.4,
+        1.5
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    }
+  ],
+  "parks": [],
+  "parking": [],
+  "features": [
+    {
+      "type": "chimney",
+      "center": [
+        12,
+        4
+      ],
+      "radius": 0.7,
+      "height": 195
+    },
+    {
+      "type": "loading-dock",
+      "bounds": [
+        3,
+        10.2,
+        5.7,
+        0.55
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        3.5,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        5.2,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        6.9,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        8.6,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        10.3,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "chimney",
+      "center": [
+        12,
+        2.5
+      ],
+      "radius": 0.6,
+      "height": 215
+    },
+    {
+      "type": "heavy-vehicle-circulation",
+      "bounds": [
+        2.1,
+        10.2,
+        11.8,
+        1.5
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 4,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 0,
+    "chimneys": 2,
+    "vehicles": 5,
+    "trees": 9
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "id": 22,
+  "name": "quartier hopital niveau 2",
+  "family": "hopital",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "hospital-main",
+      "bounds": [
+        2.1,
+        2.1,
+        7.4,
+        9.5
+      ],
+      "floors": 11,
+      "height": 225,
+      "front": "v+"
+    },
+    {
+      "type": "emergency-wing",
+      "bounds": [
+        9.5,
+        2.1,
+        4.4,
+        7.3
+      ],
+      "floors": 8,
+      "height": 165,
+      "front": "v+"
+    },
+    {
+      "type": "hospital-extension",
+      "bounds": [
+        9.5,
+        10.1,
+        4.4,
+        1.5
+      ],
+      "floors": 6,
+      "height": 125,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      2.3,
+      12.6,
+      3.4,
+      1.1
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 11,
+      "bounds": [
+        6.3,
+        12.5,
+        7.4,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "rooftop-helipad",
+      "center": [
+        6,
+        6.2
+      ],
+      "radius": 2.2,
+      "z": 229.1
+    },
+    {
+      "type": "hospital-campus-scale",
+      "buildingFootprintArea": 109.02,
+      "usableArea": 139.24,
+      "storeys": [
+        11,
+        8,
+        6
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 3,
+    "parks": 1,
+    "parkingSpaces": 11,
+    "solarTables": 0,
+    "chimneys": 0,
+    "trees": 10
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

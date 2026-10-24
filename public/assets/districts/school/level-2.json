@@ -1,0 +1,91 @@
+{
+  "id": 42,
+  "name": "quartier ecole niveau 2",
+  "family": "ecole",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "school-main",
+      "bounds": [
+        2.3,
+        2.4,
+        8.5,
+        5.4
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "school-extension",
+      "bounds": [
+        10.8,
+        2.4,
+        2.9,
+        5.4
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "apartment",
+      "bounds": [
+        2.3,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "front": "v-"
+    },
+    {
+      "type": "apartment",
+      "bounds": [
+        5.2,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "front": "v-"
+    }
+  ],
+  "parks": [
+    [
+      2.3,
+      8.4,
+      5.1,
+      1.7
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "sports-court",
+      "bounds": [
+        8,
+        8.6,
+        5.6,
+        4.8
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 4,
+    "houses": 0,
+    "apartments": 2,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "chimneys": 0,
+    "vehicles": 0,
+    "trees": 8
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

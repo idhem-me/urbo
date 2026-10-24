@@ -8,7 +8,7 @@ assert.ok(!/<(?:script|foreignObject|image)\b|\bon\w+\s*=|(?:href|url)\s*[=(]/i.
 assert.deepEqual(assetRect(EXAMPLE_DISTRICT,512,288,448),{x:0,y:0,width:1024,height:640});
 assert.deepEqual(assetRect(EXAMPLE_DISTRICT,100,100,224),{x:-156,y:-44,width:512,height:320});
 const registry={house:{1:{...EXAMPLE_DISTRICT,nightSrc:'/night.svg'}}};
-assert.equal(resolveAsset('house',2,false,registry),null);assert.equal(resolveAsset('unknown',1,false,registry),null);
+assert.equal(resolveAsset('house',2,false,registry).src,EXAMPLE_DISTRICT.src);assert.equal(resolveAsset('unknown',1,false,registry),null);
 assert.equal(resolveAsset('house',1,true,registry).src,'/night.svg');assert.equal(resolveAsset('house',1,true,registry).nightFallback,false);
 const images=[],draws=[];let refreshed=0;const renderer=createAssetRenderer({registry,createImage:()=>{const image={};images.push(image);return image;},onReady:()=>refreshed++});
 const ctx={save(){},restore(){},drawImage(...args){draws.push(args);}};
@@ -18,3 +18,5 @@ images[0].onload();assert.equal(refreshed,1);assert.equal(renderer.draw(ctx,opti
 assert.equal(renderer.draw(ctx,{...options,night:true}),false);images[1].onerror();assert.equal(renderer.draw(ctx,{...options,night:true}),false);assert.equal(images.length,2);
 renderer.dispose();assert.equal(images[0].onload,null);assert.equal(renderer.draw(ctx,options),false);
 console.log('Assets : ancrage, échelle, cache, niveaux, nuit, erreur et nettoyage validés.');
+
+assert.deepEqual(assetRect({...EXAMPLE_DISTRICT,viewBox:{x:0,y:-120,width:1024,height:760}},512,288,448),{x:0,y:-120,width:1024,height:760});

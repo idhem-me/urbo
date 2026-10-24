@@ -1,0 +1,131 @@
+{
+  "id": 36,
+  "name": "quartier atelier niveau 2",
+  "family": "atelier",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "workshop-west",
+      "bounds": [
+        2.3,
+        2.4,
+        4.8,
+        5.4
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "workshop-east",
+      "bounds": [
+        8.2,
+        2.4,
+        5.3,
+        4.8
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "workshop-south",
+      "bounds": [
+        2.3,
+        10.3,
+        3.8,
+        3.1
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    },
+    {
+      "type": "warehouse",
+      "bounds": [
+        7.2,
+        10.5,
+        4.3,
+        2.9
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      11.85,
+      10.5,
+      1.9,
+      2.8
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "van",
+      "bounds": [
+        6.2,
+        9.3,
+        0.32,
+        0.68
+      ]
+    },
+    {
+      "type": "van",
+      "bounds": [
+        7.0,
+        9.3,
+        0.32,
+        0.68
+      ]
+    },
+    {
+      "type": "van",
+      "bounds": [
+        7.800000000000001,
+        9.3,
+        0.32,
+        0.68
+      ]
+    },
+    {
+      "type": "van",
+      "bounds": [
+        8.600000000000001,
+        9.3,
+        0.32,
+        0.68
+      ]
+    },
+    {
+      "type": "shared-delivery-yard",
+      "bounds": [
+        2.1,
+        7.8,
+        11.8,
+        2.4
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 4,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "chimneys": 0,
+    "vehicles": 4,
+    "trees": 8
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

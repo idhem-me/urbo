@@ -1,0 +1,149 @@
+{
+  "id": 32,
+  "name": "quartier petrole niveau 2",
+  "family": "petrole",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "oil-site-office",
+      "bounds": [
+        2.4,
+        10.2,
+        3.4,
+        2.9
+      ],
+      "height": 45,
+      "front": "v+"
+    },
+    {
+      "type": "small-refinery",
+      "bounds": [
+        6.3,
+        10.2,
+        3,
+        2.9
+      ],
+      "height": 55,
+      "front": "v+"
+    }
+  ],
+  "features": [
+    {
+      "type": "pumpjack",
+      "bounds": [
+        3,
+        3,
+        1.7,
+        0.9
+      ]
+    },
+    {
+      "type": "pumpjack",
+      "bounds": [
+        6.3,
+        3,
+        1.7,
+        0.9
+      ]
+    },
+    {
+      "type": "pumpjack",
+      "bounds": [
+        3,
+        6.2,
+        1.7,
+        0.9
+      ]
+    },
+    {
+      "type": "pumpjack",
+      "bounds": [
+        6.3,
+        6.2,
+        1.7,
+        0.9
+      ]
+    },
+    {
+      "type": "oil-tank",
+      "center": [
+        11.6,
+        3.8
+      ],
+      "radius": 1,
+      "height": 45
+    },
+    {
+      "type": "oil-tank",
+      "center": [
+        11.6,
+        6.4
+      ],
+      "radius": 1,
+      "height": 45
+    },
+    {
+      "type": "oil-tank",
+      "center": [
+        11.6,
+        9
+      ],
+      "radius": 1,
+      "height": 45
+    },
+    {
+      "type": "refining-column",
+      "center": [
+        7,
+        10.8
+      ],
+      "radius": 0.3,
+      "height": 90
+    },
+    {
+      "type": "refining-column",
+      "center": [
+        8.2,
+        11.8
+      ],
+      "radius": 0.3,
+      "height": 90
+    },
+    {
+      "type": "pipe-network",
+      "links": "pumpjacks → tanks → refinery"
+    }
+  ],
+  "machines": [
+    {
+      "type": "tanker-truck",
+      "u": 11.0,
+      "v": 11.8,
+      "axis": "v"
+    },
+    {
+      "type": "tanker-truck",
+      "u": 11.9,
+      "v": 11.8,
+      "axis": "v"
+    }
+  ],
+  "fields": [],
+  "counts": {
+    "buildings": 2,
+    "fields": 0,
+    "pumpjacks": 4,
+    "oilTanks": 3,
+    "machines": 2,
+    "trees": 3
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

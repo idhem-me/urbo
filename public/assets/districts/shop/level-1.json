@@ -1,0 +1,184 @@
+{
+  "id": 53,
+  "name": "quartier epicerie niveau 1",
+  "family": "epicerie",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "grocery",
+      "bounds": [
+        0.7,
+        3.6,
+        5.6,
+        2.8
+      ],
+      "floors": 1,
+      "height": 25,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        9.4,
+        3.5,
+        2.2,
+        2.3
+      ],
+      "front": "v+",
+      "floors": 1
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        9.4,
+        9.5,
+        2.2,
+        2.3
+      ],
+      "front": "v+",
+      "floors": 1
+    },
+    {
+      "type": "house",
+      "bounds": [
+        0.7,
+        0.65,
+        1.2,
+        1.3
+      ],
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        3.7,
+        0.65,
+        1.2,
+        1.3
+      ],
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        9.4,
+        0.65,
+        1.2,
+        1.3
+      ],
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "bounds": [
+        12.4,
+        0.65,
+        1.2,
+        1.3
+      ],
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      12,
+      3.5,
+      3.3,
+      2.3
+    ],
+    [
+      12,
+      9.5,
+      3.3,
+      2.3
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 7,
+      "bounds": [
+        9.5,
+        13.7,
+        4.8,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "shopfront",
+      "bounds": [
+        0.7,
+        6.4,
+        5.6,
+        0.22
+      ]
+    },
+    {
+      "type": "glazed-entrance",
+      "bounds": [
+        2.5,
+        6.4,
+        1.6,
+        0.5
+      ]
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 10
+    },
+    {
+      "type": "market-stall",
+      "u": 3.2,
+      "v": 10
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 12.1
+    },
+    {
+      "type": "market-stall",
+      "u": 3.2,
+      "v": 12.1
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 14.1
+    },
+    {
+      "type": "market-stall",
+      "u": 3.2,
+      "v": 14.1
+    },
+    {
+      "type": "market-square",
+      "bounds": [
+        0.65,
+        9.4,
+        5.9,
+        5.9
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 7,
+    "houses": 4,
+    "mixedBuildings": 2,
+    "parks": 2,
+    "parkingSpaces": 7,
+    "trees": 18
+  },
+  "roadLayout": "central-cross",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

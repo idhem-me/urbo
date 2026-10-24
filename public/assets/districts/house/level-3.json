@@ -1,0 +1,835 @@
+{
+  "id": 3,
+  "name": "quartier maison niveau 3",
+  "family": "maison",
+  "level": 3,
+  "status": "à valider",
+  "buildings": [
+    {
+      "id": "house-0",
+      "type": "house",
+      "u": 0.65,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        1.48,
+        2.1
+      ]
+    },
+    {
+      "id": "house-1",
+      "type": "house",
+      "u": 1.85,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        2.68,
+        2.1
+      ]
+    },
+    {
+      "id": "house-2",
+      "type": "house",
+      "u": 3.05,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        3.88,
+        2.1
+      ]
+    },
+    {
+      "id": "house-3",
+      "type": "house",
+      "u": 4.25,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        5.08,
+        2.1
+      ]
+    },
+    {
+      "id": "house-4",
+      "type": "house",
+      "u": 9.35,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        10.18,
+        2.1
+      ]
+    },
+    {
+      "id": "house-5",
+      "type": "house",
+      "u": 10.55,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        11.38,
+        2.1
+      ]
+    },
+    {
+      "id": "house-6",
+      "type": "house",
+      "u": 11.75,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        12.58,
+        2.1
+      ]
+    },
+    {
+      "id": "house-7",
+      "type": "house",
+      "u": 12.95,
+      "v": 0.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 3.3,
+      "floors": 1,
+      "door": [
+        13.78,
+        2.1
+      ]
+    },
+    {
+      "id": "house-8",
+      "type": "house",
+      "u": 0.65,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        1.48,
+        6.2
+      ]
+    },
+    {
+      "id": "house-9",
+      "type": "house",
+      "u": 1.85,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        2.68,
+        6.2
+      ]
+    },
+    {
+      "id": "house-10",
+      "type": "house",
+      "u": 3.05,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        3.88,
+        6.2
+      ]
+    },
+    {
+      "id": "house-11",
+      "type": "house",
+      "u": 4.25,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        5.08,
+        6.2
+      ]
+    },
+    {
+      "id": "house-12",
+      "type": "house",
+      "u": 9.35,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        10.18,
+        6.2
+      ]
+    },
+    {
+      "id": "house-13",
+      "type": "house",
+      "u": 10.55,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        11.38,
+        6.2
+      ]
+    },
+    {
+      "id": "house-14",
+      "type": "house",
+      "u": 11.75,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        12.58,
+        6.2
+      ]
+    },
+    {
+      "id": "house-15",
+      "type": "house",
+      "u": 12.95,
+      "v": 4.9,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+",
+      "frontageV": 7,
+      "floors": 1,
+      "door": [
+        13.78,
+        6.2
+      ]
+    },
+    {
+      "id": "house-16",
+      "type": "house",
+      "u": 0.65,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        1.48,
+        9.8
+      ]
+    },
+    {
+      "id": "house-17",
+      "type": "house",
+      "u": 1.85,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        2.68,
+        9.8
+      ]
+    },
+    {
+      "id": "house-18",
+      "type": "house",
+      "u": 3.05,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        3.88,
+        9.8
+      ]
+    },
+    {
+      "id": "house-19",
+      "type": "house",
+      "u": 4.25,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        5.08,
+        9.8
+      ]
+    },
+    {
+      "id": "house-20",
+      "type": "house",
+      "u": 9.35,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        10.18,
+        9.8
+      ]
+    },
+    {
+      "id": "house-21",
+      "type": "house",
+      "u": 10.55,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        11.38,
+        9.8
+      ]
+    },
+    {
+      "id": "house-22",
+      "type": "house",
+      "u": 11.75,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        12.58,
+        9.8
+      ]
+    },
+    {
+      "id": "house-23",
+      "type": "house",
+      "u": 12.95,
+      "v": 9.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 9,
+      "floors": 1,
+      "door": [
+        13.78,
+        9.8
+      ]
+    },
+    {
+      "id": "house-24",
+      "type": "house",
+      "u": 0.65,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        1.48,
+        13.8
+      ]
+    },
+    {
+      "id": "house-25",
+      "type": "house",
+      "u": 1.85,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        2.68,
+        13.8
+      ]
+    },
+    {
+      "id": "house-26",
+      "type": "house",
+      "u": 3.05,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        3.88,
+        13.8
+      ]
+    },
+    {
+      "id": "house-27",
+      "type": "house",
+      "u": 4.25,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        5.08,
+        13.8
+      ]
+    },
+    {
+      "id": "house-28",
+      "type": "house",
+      "u": 9.35,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        10.18,
+        13.8
+      ]
+    },
+    {
+      "id": "house-29",
+      "type": "house",
+      "u": 10.55,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        11.38,
+        13.8
+      ]
+    },
+    {
+      "id": "house-30",
+      "type": "house",
+      "u": 11.75,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        12.58,
+        13.8
+      ]
+    },
+    {
+      "id": "house-31",
+      "type": "house",
+      "u": 12.95,
+      "v": 13.8,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v-",
+      "frontageV": 12.95,
+      "floors": 1,
+      "door": [
+        13.78,
+        13.8
+      ]
+    }
+  ],
+  "access": [
+    {
+      "building": "house-0",
+      "walkway": [
+        1.37,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-1",
+      "walkway": [
+        2.5700000000000003,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-2",
+      "walkway": [
+        3.7699999999999996,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-3",
+      "walkway": [
+        4.97,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-4",
+      "walkway": [
+        10.07,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-5",
+      "walkway": [
+        11.270000000000001,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-6",
+      "walkway": [
+        12.47,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-7",
+      "walkway": [
+        13.67,
+        2.1,
+        0.22,
+        1.1999999999999997
+      ],
+      "roadEdgeV": 3.3
+    },
+    {
+      "building": "house-8",
+      "walkway": [
+        1.37,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-9",
+      "walkway": [
+        2.5700000000000003,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-10",
+      "walkway": [
+        3.7699999999999996,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-11",
+      "walkway": [
+        4.97,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-12",
+      "walkway": [
+        10.07,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-13",
+      "walkway": [
+        11.270000000000001,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-14",
+      "walkway": [
+        12.47,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-15",
+      "walkway": [
+        13.67,
+        6.2,
+        0.22,
+        0.7999999999999998
+      ],
+      "roadEdgeV": 7
+    },
+    {
+      "building": "house-16",
+      "walkway": [
+        1.37,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-17",
+      "walkway": [
+        2.5700000000000003,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-18",
+      "walkway": [
+        3.7699999999999996,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-19",
+      "walkway": [
+        4.97,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-20",
+      "walkway": [
+        10.07,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-21",
+      "walkway": [
+        11.270000000000001,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-22",
+      "walkway": [
+        12.47,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-23",
+      "walkway": [
+        13.67,
+        9,
+        0.22,
+        0.8000000000000007
+      ],
+      "roadEdgeV": 9
+    },
+    {
+      "building": "house-24",
+      "walkway": [
+        1.37,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-25",
+      "walkway": [
+        2.5700000000000003,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-26",
+      "walkway": [
+        3.7699999999999996,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-27",
+      "walkway": [
+        4.97,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-28",
+      "walkway": [
+        10.07,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-29",
+      "walkway": [
+        11.270000000000001,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-30",
+      "walkway": [
+        12.47,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    },
+    {
+      "building": "house-31",
+      "walkway": [
+        13.67,
+        12.95,
+        0.22,
+        0.8500000000000014
+      ],
+      "roadEdgeV": 12.95
+    }
+  ],
+  "parks": [
+    [
+      0.55,
+      11.35,
+      5.8,
+      0.58
+    ],
+    [
+      9.4,
+      4.08,
+      5.8,
+      0.58
+    ]
+  ],
+  "parking": [],
+  "counts": {
+    "houses": 32,
+    "apartments": 0,
+    "parks": 2
+  },
+  "overhang": {
+    "roofMaxGroundUnits": 0.08,
+    "verticalProjection": "within viewBox for this batch"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "id": 16,
+  "name": "quartier pompiers niveau 2",
+  "family": "pompiers",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "fire-station-main",
+      "u": 2.1,
+      "v": 2.1,
+      "width": 11.8,
+      "depth": 8.1,
+      "height": 68,
+      "front": "v+",
+      "garages": 8
+    },
+    {
+      "type": "training-tower",
+      "u": 2.1,
+      "v": 10.2,
+      "width": 3,
+      "depth": 3,
+      "height": 135,
+      "front": "v+",
+      "garages": 0
+    }
+  ],
+  "vehicles": [
+    {
+      "type": "pompiers",
+      "u": 5.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 6.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 7.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 8.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 9.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 10.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 11.5,
+      "v": 10.55,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 12.5,
+      "v": 10.55,
+      "axis": "v"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 11,
+      "bounds": [
+        5.5,
+        12.25,
+        7.4,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "rooftop-helipad",
+      "center": [
+        10.6,
+        5.6
+      ],
+      "radius": 2.05,
+      "z": 72.1
+    },
+    {
+      "type": "training-descent-cables",
+      "u": 4.65,
+      "v": 13.55
+    },
+    {
+      "type": "site-proportion",
+      "usableArea": 139.24,
+      "buildingArea": 104.58,
+      "buildingShareOfUsableArea": 0.7510772766446423
+    }
+  ],
+  "counts": {
+    "houses": 0,
+    "apartments": 0,
+    "serviceVehicles": 8,
+    "parks": 0,
+    "parkingSpaces": 11,
+    "trees": 9
+  },
+  "roadLayout": "peripheral-ring",
+  "revision": "civic landmarks and dominant fire-service campus"
+}

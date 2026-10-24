@@ -1,0 +1,85 @@
+{
+  "id": 50,
+  "name": "quartier tennis niveau 2",
+  "family": "tennis",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "tennis-clubhouse",
+      "bounds": [
+        8.3,
+        7.1,
+        4.2,
+        1.6
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      2.4,
+      7.1,
+      4.2,
+      1.6
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "tennis-court",
+      "bounds": [
+        2.4,
+        2.4,
+        4.2,
+        4.2
+      ]
+    },
+    {
+      "type": "tennis-court",
+      "bounds": [
+        8.3,
+        2.4,
+        4.2,
+        4.2
+      ]
+    },
+    {
+      "type": "tennis-court",
+      "bounds": [
+        2.4,
+        9.2,
+        4.2,
+        4.2
+      ]
+    },
+    {
+      "type": "covered-tennis-court",
+      "bounds": [
+        8.3,
+        9.2,
+        4.2,
+        4.2
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 1,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "sportsSurfaces": 4,
+    "trees": 8
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

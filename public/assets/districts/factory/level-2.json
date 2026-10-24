@@ -1,0 +1,103 @@
+{
+  "id": 38,
+  "name": "quartier petite-usine niveau 2",
+  "family": "petite-usine",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "sawtooth-factory",
+      "bounds": [
+        2.3,
+        2.4,
+        11.2,
+        7
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "factory-extension",
+      "bounds": [
+        2.3,
+        11.5,
+        5.7,
+        2
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    },
+    {
+      "type": "storage-building",
+      "bounds": [
+        9,
+        11.5,
+        4.5,
+        2
+      ],
+      "floors": 1,
+      "height": 25,
+      "front": "v+"
+    }
+  ],
+  "parks": [],
+  "parking": [],
+  "features": [
+    {
+      "type": "loading-dock",
+      "bounds": [
+        3,
+        9.4,
+        2.7,
+        0.55
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        3.5,
+        10,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "loading-dock",
+      "bounds": [
+        8.7,
+        9.4,
+        2.7,
+        0.55
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        9.2,
+        10,
+        0.48,
+        1.12
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 3,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 0,
+    "chimneys": 0,
+    "vehicles": 2,
+    "trees": 12
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

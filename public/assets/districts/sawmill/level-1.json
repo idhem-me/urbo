@@ -1,0 +1,83 @@
+{
+  "id": 29,
+  "name": "quartier scierie niveau 1",
+  "family": "scierie",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "sawmill",
+      "bounds": [
+        2.3,
+        2.4,
+        6.8,
+        4.8
+      ],
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "features": [
+    {
+      "type": "log-stock",
+      "bounds": [
+        10.7,
+        2.5,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        10.7,
+        4.6,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        2.6,
+        9,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        5.8,
+        9,
+        2.4,
+        1.2
+      ]
+    }
+  ],
+  "machines": [
+    {
+      "type": "truck",
+      "u": 11.3,
+      "v": 11.6,
+      "axis": "v"
+    }
+  ],
+  "fields": [],
+  "counts": {
+    "buildings": 1,
+    "fields": 0,
+    "pumpjacks": 0,
+    "oilTanks": 0,
+    "machines": 1,
+    "trees": 6
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

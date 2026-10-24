@@ -1,12 +1,11 @@
-import {EXAMPLE_DISTRICT,assetRect} from './manifest.js';
-const asset=EXAMPLE_DISTRICT,image=new Image();
-image.onload=()=>{
- for(const id of ['day','night']){
-  const canvas=document.getElementById(id),ctx=canvas.getContext('2d'),night=id==='night';
-  ctx.fillStyle=night?'#192925':'#cbded7';ctx.fillRect(0,0,1024,640);
-  const r=assetRect(asset,512,288,448);ctx.save();if(night)ctx.filter='brightness(.55) saturate(.7)';ctx.drawImage(image,r.x,r.y,r.width,r.height);ctx.restore();
-  ctx.strokeStyle=night?'#ffffff':'#263c35';ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(512,64);ctx.lineTo(960,288);ctx.lineTo(512,512);ctx.lineTo(64,288);ctx.closePath();ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(502,288);ctx.lineTo(522,288);ctx.moveTo(512,278);ctx.lineTo(512,298);ctx.stroke();
- }
- document.getElementById('result').textContent=`SVG chargé : ${image.naturalWidth} × ${image.naturalHeight}. Ancrage et rendu jour/nuit disponibles.`;
-};
-image.onerror=()=>{document.getElementById('result').textContent='Le SVG n’a pas pu être chargé.';};image.src=asset.src;
+import {DISTRICT_ASSETS} from './districts.js';
+const gallery=document.getElementById('gallery'),cards=[];
+for(const asset of DISTRICT_ASSETS){
+ const card=document.createElement('figure'),link=document.createElement('a'),img=document.createElement('img'),caption=document.createElement('figcaption'),name=document.createElement('b'),info=document.createElement('small');
+ link.href=asset.src;link.target='_blank';link.rel='noopener';img.src=asset.src;img.alt=asset.label;img.loading='lazy';img.decoding='async';link.append(img);
+ name.textContent=asset.label;info.textContent=`${asset.type} · ${Math.round(asset.bytes/1024)} Ko · ${asset.viewBox.width} × ${asset.viewBox.height}`;
+ caption.append(name,info);card.append(link,caption);gallery.append(card);cards.push({card,label:asset.label});
+}
+function search(){const text=document.getElementById('search').value.toLocaleLowerCase('fr').normalize('NFD').replace(/\p{Diacritic}/gu,'');let count=0;for(const {card,label} of cards){card.hidden=!label.toLocaleLowerCase('fr').normalize('NFD').replace(/\p{Diacritic}/gu,'').includes(text);if(!card.hidden)count++;}document.getElementById('result').textContent=`${count} / 61 assets`;}
+document.getElementById('search').addEventListener('input',search);search();
+document.getElementById('theme').onclick=e=>{const dark=document.body.classList.toggle('night');e.currentTarget.setAttribute('aria-pressed',String(dark));e.currentTarget.textContent=dark?'Mode jour':'Mode nuit';};

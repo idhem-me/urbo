@@ -1,0 +1,65 @@
+{
+  "id": 43,
+  "name": "quartier parc niveau 1",
+  "family": "parc",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [],
+  "parks": [
+    [
+      2.1,
+      2.1,
+      11.8,
+      11.8
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "curved-garden-path-network",
+      "bounds": [
+        2.1,
+        2.1,
+        11.8,
+        11.8
+      ]
+    },
+    {
+      "type": "pond",
+      "center": [
+        8,
+        8
+      ],
+      "radius": [
+        1.7,
+        1.2
+      ]
+    },
+    {
+      "type": "garden-kiosk",
+      "center": [
+        4.4,
+        5
+      ],
+      "radius": 0.65,
+      "height": 22
+    }
+  ],
+  "counts": {
+    "buildings": 0,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "sportsSurfaces": 0,
+    "trees": 20
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

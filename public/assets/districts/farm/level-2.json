@@ -1,0 +1,129 @@
+{
+  "id": 34,
+  "name": "quartier ferme niveau 2",
+  "family": "ferme",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "farmhouse",
+      "bounds": [
+        2.35,
+        2.4,
+        3.1,
+        1.6
+      ],
+      "height": 38,
+      "front": "v+"
+    },
+    {
+      "type": "farm-wing",
+      "bounds": [
+        2.35,
+        4,
+        1.5,
+        2.5
+      ],
+      "height": 44,
+      "front": "v+"
+    },
+    {
+      "type": "greenhouse",
+      "bounds": [
+        4.35,
+        4.5,
+        2.1,
+        2.8
+      ],
+      "height": 34
+    }
+  ],
+  "features": [
+    {
+      "type": "grain-silo",
+      "center": [
+        6.25,
+        2.95
+      ],
+      "radius": 0.5,
+      "height": 95
+    },
+    {
+      "type": "single-monoculture-field",
+      "parcelCount": 1,
+      "polygon": [
+        [
+          7,
+          2.1
+        ],
+        [
+          13.9,
+          2.1
+        ],
+        [
+          13.9,
+          13.9
+        ],
+        [
+          2.1,
+          13.9
+        ],
+        [
+          2.1,
+          7.8
+        ],
+        [
+          7,
+          7.8
+        ]
+      ],
+      "rectangles": [
+        [
+          7,
+          2.1,
+          6.9,
+          11.8
+        ],
+        [
+          2.1,
+          7.8,
+          4.9,
+          6.1000000000000005
+        ]
+      ],
+      "cropColor": "#B6BD8D",
+      "area": 111.31000000000002
+    }
+  ],
+  "machines": [],
+  "fields": [
+    [
+      7,
+      2.1,
+      6.9,
+      11.8
+    ],
+    [
+      2.1,
+      7.8,
+      4.9,
+      6.1000000000000005
+    ]
+  ],
+  "counts": {
+    "buildings": 3,
+    "fields": 1,
+    "pumpjacks": 0,
+    "oilTanks": 0,
+    "machines": 0,
+    "trees": 0
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "id": 10,
+  "name": "quartier bureaux niveau 1",
+  "level": 1,
+  "status": "à valider",
+  "revision": "compositions distinctes : marché, piéton, entreprises et gratte-ciel",
+  "buildings": [
+    {
+      "type": "office",
+      "u": 0.7,
+      "v": 3.4,
+      "width": 4.7,
+      "depth": 2.5,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "office",
+      "u": 9.5,
+      "v": 4.3,
+      "width": 2,
+      "depth": 2.2,
+      "floors": 3,
+      "front": "v+"
+    },
+    {
+      "type": "office",
+      "u": 12.2,
+      "v": 4.6,
+      "width": 2.5,
+      "depth": 1.9,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "office",
+      "u": 0.7,
+      "v": 9.7,
+      "width": 2.2,
+      "depth": 2.8,
+      "floors": 3,
+      "front": "v-"
+    },
+    {
+      "type": "office",
+      "u": 3.6,
+      "v": 10,
+      "width": 2.6,
+      "depth": 2.2,
+      "floors": 2,
+      "front": "v-"
+    },
+    {
+      "type": "office",
+      "u": 10,
+      "v": 9.8,
+      "width": 4.5,
+      "depth": 2.3,
+      "floors": 2,
+      "front": "v-"
+    }
+  ],
+  "parks": [
+    [
+      9.5,
+      0.7,
+      5.7,
+      2.3
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 7,
+      "bounds": [
+        0.7,
+        0.6,
+        4.8,
+        1.25
+      ],
+      "roadEdgeU": 7.4
+    },
+    {
+      "kind": "surface",
+      "spaces": 7,
+      "bounds": [
+        0.7,
+        13.6,
+        4.8,
+        1.25
+      ],
+      "roadEdgeU": 7.4
+    },
+    {
+      "kind": "surface",
+      "spaces": 7,
+      "bounds": [
+        9.6,
+        13.6,
+        4.8,
+        1.25
+      ],
+      "roadEdgeU": 8.6
+    }
+  ],
+  "features": [],
+  "counts": {
+    "mixedBuildings": 0,
+    "houses": 0,
+    "offices": 6,
+    "towers": 0,
+    "parks": 1,
+    "blocks": 0,
+    "parkingSpaces": 21,
+    "trees": 10
+  },
+  "visualOverhang": {
+    "viewBox": "0 -80 1024 720",
+    "groundOrigin": [
+      512,
+      64
+    ],
+    "towers": false
+  }
+}

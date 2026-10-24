@@ -1,0 +1,99 @@
+{
+  "id": 21,
+  "name": "quartier hopital niveau 1",
+  "family": "hopital",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "hospital-main",
+      "bounds": [
+        2.1,
+        2.1,
+        7.4,
+        8.6
+      ],
+      "floors": 7,
+      "height": 145,
+      "front": "v+"
+    },
+    {
+      "type": "emergency-wing",
+      "bounds": [
+        9.5,
+        2.1,
+        4.4,
+        7.3
+      ],
+      "floors": 5,
+      "height": 105,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      11.4,
+      10.45,
+      1.2,
+      0.65
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 8,
+      "bounds": [
+        2.3,
+        12.3,
+        5.45,
+        1.3
+      ]
+    },
+    {
+      "kind": "surface",
+      "spaces": 8,
+      "bounds": [
+        8.2,
+        12.3,
+        5.45,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "emergency-dropoff-loop",
+      "bounds": [
+        9.5,
+        9.4,
+        4.4,
+        2.45
+      ]
+    },
+    {
+      "type": "hospital-campus-scale",
+      "buildingFootprintArea": 95.76,
+      "usableArea": 139.24,
+      "storeys": [
+        7,
+        5
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 2,
+    "parks": 1,
+    "parkingSpaces": 16,
+    "solarTables": 0,
+    "chimneys": 0,
+    "trees": 10
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

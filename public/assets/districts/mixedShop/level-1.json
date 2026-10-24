@@ -1,0 +1,196 @@
+{
+  "id": 7,
+  "name": "quartier boutiques-logements niveau 1",
+  "level": 1,
+  "status": "à valider",
+  "revision": "compositions distinctes : marché, piéton, entreprises et gratte-ciel",
+  "buildings": [
+    {
+      "type": "mixed",
+      "u": 0.65,
+      "v": 4.6,
+      "width": 2.3,
+      "depth": 1.8,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "mixed",
+      "u": 3.55,
+      "v": 4.9,
+      "width": 2.7,
+      "depth": 1.5,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "mixed",
+      "u": 9.4,
+      "v": 4.6,
+      "width": 2.2,
+      "depth": 1.8,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "mixed",
+      "u": 12.1,
+      "v": 4.8,
+      "width": 2.5,
+      "depth": 1.6,
+      "floors": 2,
+      "front": "v+"
+    },
+    {
+      "type": "mixed",
+      "u": 9.4,
+      "v": 9.6,
+      "width": 2.1,
+      "depth": 1.8,
+      "floors": 2,
+      "front": "v-"
+    },
+    {
+      "type": "mixed",
+      "u": 12.1,
+      "v": 9.6,
+      "width": 2.5,
+      "depth": 1.8,
+      "floors": 2,
+      "front": "v-"
+    },
+    {
+      "type": "house",
+      "u": 0.7,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    },
+    {
+      "type": "house",
+      "u": 2.6,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    },
+    {
+      "type": "house",
+      "u": 4.5,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    },
+    {
+      "type": "house",
+      "u": 9.4,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    },
+    {
+      "type": "house",
+      "u": 11.3,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    },
+    {
+      "type": "house",
+      "u": 13.2,
+      "v": 0.7,
+      "width": 1.2,
+      "depth": 1.3,
+      "floors": 1,
+      "front": "v+",
+      "frontageV": 2.9
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 4,
+      "bounds": [
+        9.5,
+        12.5,
+        2.85,
+        1.25
+      ],
+      "roadEdgeU": 8.6
+    }
+  ],
+  "features": [
+    {
+      "type": "market-square",
+      "bounds": [
+        0.6,
+        9.4,
+        5.9,
+        5.9
+      ]
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 10
+    },
+    {
+      "type": "market-stall",
+      "u": 3,
+      "v": 10
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 12.1
+    },
+    {
+      "type": "market-stall",
+      "u": 3,
+      "v": 12.1
+    },
+    {
+      "type": "market-stall",
+      "u": 1,
+      "v": 14
+    },
+    {
+      "type": "market-stall",
+      "u": 3,
+      "v": 14
+    }
+  ],
+  "counts": {
+    "mixedBuildings": 6,
+    "houses": 6,
+    "offices": 0,
+    "towers": 0,
+    "parks": 0,
+    "blocks": 0,
+    "parkingSpaces": 4,
+    "trees": 12
+  },
+  "visualOverhang": {
+    "viewBox": "0 -80 1024 720",
+    "groundOrigin": [
+      512,
+      64
+    ],
+    "towers": false
+  }
+}

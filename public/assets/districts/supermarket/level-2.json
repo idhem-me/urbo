@@ -1,0 +1,84 @@
+{
+  "id": 56,
+  "name": "quartier supermarche niveau 2",
+  "family": "supermarche",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "supermarket",
+      "bounds": [
+        2.3,
+        2.4,
+        11.2,
+        5.5
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 30,
+      "bounds": [
+        7.1,
+        9.6,
+        6.75,
+        3.9000000000000004
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "shopfront",
+      "bounds": [
+        2.3,
+        7.9,
+        11.2,
+        0.22
+      ]
+    },
+    {
+      "type": "glazed-entrance",
+      "bounds": [
+        6,
+        7.9,
+        2.4,
+        0.5
+      ]
+    },
+    {
+      "type": "fuel-station",
+      "bounds": [
+        2.3,
+        10.5,
+        4.2,
+        3
+      ]
+    },
+    {
+      "type": "shopping-carts",
+      "count": 5,
+      "v": 8.1
+    }
+  ],
+  "counts": {
+    "buildings": 1,
+    "houses": 0,
+    "mixedBuildings": 0,
+    "parks": 0,
+    "parkingSpaces": 30,
+    "trees": 5
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

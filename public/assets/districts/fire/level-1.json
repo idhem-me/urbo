@@ -1,0 +1,95 @@
+{
+  "id": 15,
+  "name": "quartier pompiers niveau 1",
+  "family": "pompiers",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "fire-station-main",
+      "u": 2.1,
+      "v": 2.1,
+      "width": 11.8,
+      "depth": 5.9,
+      "height": 48,
+      "front": "v+",
+      "garages": 6
+    }
+  ],
+  "vehicles": [
+    {
+      "type": "pompiers",
+      "u": 2.6,
+      "v": 8.3,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 4.4,
+      "v": 8.3,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 6.2,
+      "v": 8.3,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 8.0,
+      "v": 8.3,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 9.8,
+      "v": 8.3,
+      "axis": "v"
+    },
+    {
+      "type": "pompiers",
+      "u": 11.6,
+      "v": 8.3,
+      "axis": "v"
+    }
+  ],
+  "parks": [
+    [
+      2.25,
+      10.2,
+      4.1,
+      3.1
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 18,
+      "bounds": [
+        7,
+        10.3,
+        6.1000000000000005,
+        2.6
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "site-proportion",
+      "usableArea": 139.24,
+      "buildingArea": 69.62,
+      "buildingShareOfUsableArea": 0.5
+    }
+  ],
+  "counts": {
+    "houses": 0,
+    "apartments": 0,
+    "serviceVehicles": 6,
+    "parks": 1,
+    "parkingSpaces": 18,
+    "trees": 13
+  },
+  "roadLayout": "peripheral-ring",
+  "revision": "civic landmarks and dominant fire-service campus"
+}

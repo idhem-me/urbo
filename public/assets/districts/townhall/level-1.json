@@ -1,0 +1,114 @@
+{
+  "id": 13,
+  "name": "quartier mairie niveau 1",
+  "family": "mairie",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "town-hall",
+      "u": 2.2,
+      "v": 3,
+      "width": 4,
+      "depth": 2.5,
+      "height": 48,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "town-hall-belfry",
+      "u": 3.65,
+      "v": 2.1,
+      "width": 0.9,
+      "depth": 0.9,
+      "height": 105,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "church",
+      "u": 10,
+      "v": 3.2,
+      "width": 2.6,
+      "depth": 3.4,
+      "height": 67,
+      "front": "v+"
+    },
+    {
+      "type": "church-bell-tower",
+      "u": 12.75,
+      "v": 5.65,
+      "width": 0.9,
+      "depth": 0.9,
+      "height": 105,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "house",
+      "u": 9.6,
+      "v": 10.3,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "u": 11,
+      "v": 10.3,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+"
+    },
+    {
+      "type": "house",
+      "u": 12.4,
+      "v": 10.3,
+      "width": 1.2,
+      "depth": 1.3,
+      "front": "v+"
+    }
+  ],
+  "vehicles": [],
+  "parks": [
+    [
+      2.3,
+      10,
+      3.8,
+      3
+    ]
+  ],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 4,
+      "bounds": [
+        2.3,
+        7.4,
+        2.85,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "statue-square",
+      "bounds": [
+        5.6,
+        7.8,
+        4,
+        1.7
+      ]
+    }
+  ],
+  "counts": {
+    "houses": 3,
+    "apartments": 0,
+    "serviceVehicles": 0,
+    "parks": 1,
+    "parkingSpaces": 4,
+    "trees": 12
+  },
+  "roadLayout": "peripheral-ring",
+  "revision": "civic landmarks and dominant fire-service campus"
+}

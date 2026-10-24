@@ -1,0 +1,102 @@
+{
+  "id": 39,
+  "name": "quartier grande-usine niveau 1",
+  "family": "grande-usine",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "heavy-industry-main",
+      "bounds": [
+        2.3,
+        2.4,
+        8,
+        7.8
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "industrial-office",
+      "bounds": [
+        10.9,
+        6.3,
+        2.4,
+        2.9
+      ],
+      "floors": 2,
+      "height": 45,
+      "front": "v+"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 12,
+      "bounds": [
+        2.3,
+        12.1,
+        8.05,
+        1.3
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "chimney",
+      "center": [
+        12,
+        4
+      ],
+      "radius": 0.7,
+      "height": 195
+    },
+    {
+      "type": "loading-dock",
+      "bounds": [
+        3,
+        10.2,
+        5.7,
+        0.55
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        3.5,
+        10.85,
+        0.48,
+        1.12
+      ]
+    },
+    {
+      "type": "truck",
+      "bounds": [
+        5.2,
+        10.85,
+        0.48,
+        1.12
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 2,
+    "houses": 0,
+    "apartments": 0,
+    "parks": 0,
+    "parkingSpaces": 12,
+    "chimneys": 1,
+    "vehicles": 2,
+    "trees": 9
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

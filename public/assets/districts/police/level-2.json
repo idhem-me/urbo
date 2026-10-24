@@ -1,0 +1,169 @@
+{
+  "id": 18,
+  "name": "quartier police niveau 2",
+  "family": "police",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "police-headquarters",
+      "u": 2.1,
+      "v": 2.1,
+      "width": 5.7,
+      "depth": 11.8,
+      "height": 88,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "prison-north",
+      "u": 8.2,
+      "v": 2.1,
+      "width": 5.7,
+      "depth": 1.2,
+      "height": 68,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "prison-west",
+      "u": 8.2,
+      "v": 3.3,
+      "width": 1.2,
+      "depth": 5.8,
+      "height": 68,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "prison-east",
+      "u": 12.7,
+      "v": 3.3,
+      "width": 1.2,
+      "depth": 5.8,
+      "height": 68,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "prison-south-west",
+      "u": 8.2,
+      "v": 9.1,
+      "width": 2.3,
+      "depth": 1.2,
+      "height": 68,
+      "front": "v+",
+      "garages": 0
+    },
+    {
+      "type": "prison-south-east",
+      "u": 11.7,
+      "v": 9.1,
+      "width": 2.2,
+      "depth": 1.2,
+      "height": 68,
+      "front": "v+",
+      "garages": 0
+    }
+  ],
+  "vehicles": [
+    {
+      "type": "police",
+      "u": 8.4,
+      "v": 10.4,
+      "axis": "v"
+    },
+    {
+      "type": "police",
+      "u": 9.25,
+      "v": 10.4,
+      "axis": "v"
+    },
+    {
+      "type": "police",
+      "u": 10.1,
+      "v": 10.4,
+      "axis": "v"
+    },
+    {
+      "type": "police",
+      "u": 11.8,
+      "v": 10.4,
+      "axis": "v"
+    },
+    {
+      "type": "police",
+      "u": 12.65,
+      "v": 10.4,
+      "axis": "v"
+    }
+  ],
+  "parks": [],
+  "parking": [
+    {
+      "kind": "surface",
+      "spaces": 6,
+      "bounds": [
+        8.2,
+        11.2,
+        2.2,
+        2.6
+      ]
+    },
+    {
+      "kind": "surface",
+      "spaces": 6,
+      "bounds": [
+        11.55,
+        11.2,
+        2.2,
+        2.6
+      ]
+    }
+  ],
+  "features": [
+    {
+      "type": "rooftop-helipad",
+      "center": [
+        4.95,
+        6.6
+      ],
+      "radius": 2.0,
+      "z": 92.1
+    },
+    {
+      "type": "prison-open-courtyard",
+      "bounds": [
+        9.4,
+        3.3,
+        3.3,
+        5.8
+      ]
+    },
+    {
+      "type": "prison-vehicle-gate",
+      "bounds": [
+        10.5,
+        9.1,
+        1.2,
+        1.2
+      ]
+    },
+    {
+      "type": "site-proportion",
+      "usableArea": 139.24,
+      "headquartersArea": 67.26,
+      "headquartersShareOfUsableArea": 0.4830508474576271
+    }
+  ],
+  "counts": {
+    "houses": 0,
+    "apartments": 0,
+    "serviceVehicles": 5,
+    "parks": 0,
+    "parkingSpaces": 12,
+    "trees": 13
+  },
+  "roadLayout": "peripheral-ring",
+  "revision": "civic landmarks and dominant fire-service campus"
+}

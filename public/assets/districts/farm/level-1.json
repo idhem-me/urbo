@@ -1,0 +1,99 @@
+{
+  "id": 33,
+  "name": "quartier ferme niveau 1",
+  "family": "ferme",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "farmhouse",
+      "bounds": [
+        2.35,
+        2.4,
+        1.7,
+        1.3
+      ],
+      "height": 29,
+      "front": "v+"
+    }
+  ],
+  "features": [
+    {
+      "type": "single-monoculture-field",
+      "parcelCount": 1,
+      "polygon": [
+        [
+          5.3,
+          2.1
+        ],
+        [
+          13.9,
+          2.1
+        ],
+        [
+          13.9,
+          13.9
+        ],
+        [
+          2.1,
+          13.9
+        ],
+        [
+          2.1,
+          4.5
+        ],
+        [
+          5.3,
+          4.5
+        ]
+      ],
+      "rectangles": [
+        [
+          5.3,
+          2.1,
+          8.600000000000001,
+          11.8
+        ],
+        [
+          2.1,
+          4.5,
+          3.1999999999999997,
+          9.4
+        ]
+      ],
+      "cropColor": "#B6BD8D",
+      "area": 131.56
+    }
+  ],
+  "machines": [],
+  "fields": [
+    [
+      5.3,
+      2.1,
+      8.600000000000001,
+      11.8
+    ],
+    [
+      2.1,
+      4.5,
+      3.1999999999999997,
+      9.4
+    ]
+  ],
+  "counts": {
+    "buildings": 1,
+    "fields": 1,
+    "pumpjacks": 0,
+    "oilTanks": 0,
+    "machines": 0,
+    "trees": 0
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

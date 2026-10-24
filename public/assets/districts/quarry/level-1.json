@@ -1,0 +1,57 @@
+{
+  "id": 27,
+  "name": "quartier carriere niveau 1",
+  "family": "carriere",
+  "level": 1,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "quarry-office",
+      "bounds": [
+        11.2,
+        2.5,
+        2.3,
+        2.1
+      ],
+      "height": 28,
+      "front": "v+"
+    }
+  ],
+  "features": [
+    {
+      "type": "quarry-stepped-pit",
+      "bounds": [
+        2.3,
+        2.3,
+        8.5,
+        10.7
+      ],
+      "benches": 2,
+      "depth": 24
+    }
+  ],
+  "machines": [
+    {
+      "type": "excavator",
+      "u": 7,
+      "v": 8
+    }
+  ],
+  "fields": [],
+  "counts": {
+    "buildings": 1,
+    "fields": 0,
+    "pumpjacks": 0,
+    "oilTanks": 0,
+    "machines": 1,
+    "trees": 3
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

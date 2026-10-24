@@ -1,0 +1,112 @@
+{
+  "id": 30,
+  "name": "quartier scierie niveau 2",
+  "family": "scierie",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "sawmill",
+      "bounds": [
+        2.3,
+        2.4,
+        6.8,
+        4.8
+      ],
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "lumber-storage",
+      "bounds": [
+        2.3,
+        11,
+        4.8,
+        2.5
+      ],
+      "height": 38,
+      "front": "v+"
+    }
+  ],
+  "features": [
+    {
+      "type": "log-stock",
+      "bounds": [
+        10.7,
+        2.5,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        10.7,
+        4.6,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        2.6,
+        9,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "log-stock",
+      "bounds": [
+        5.8,
+        9,
+        2.4,
+        1.2
+      ]
+    },
+    {
+      "type": "handling-crane",
+      "u": 8.5,
+      "v": 9.2,
+      "height": 95
+    }
+  ],
+  "machines": [
+    {
+      "type": "truck",
+      "u": 10.8,
+      "v": 11.8,
+      "axis": "v"
+    },
+    {
+      "type": "truck",
+      "u": 11.65,
+      "v": 11.8,
+      "axis": "v"
+    },
+    {
+      "type": "truck",
+      "u": 12.5,
+      "v": 11.8,
+      "axis": "v"
+    }
+  ],
+  "fields": [],
+  "counts": {
+    "buildings": 2,
+    "fields": 0,
+    "pumpjacks": 0,
+    "oilTanks": 0,
+    "machines": 3,
+    "trees": 6
+  },
+  "roadLayout": "rural-peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -100 1024 740",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}

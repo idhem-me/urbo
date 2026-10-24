@@ -1,0 +1,195 @@
+{
+  "id": 52,
+  "name": "quartier salle-sport niveau 2",
+  "family": "salle-sport",
+  "level": 2,
+  "status": "à valider",
+  "buildings": [
+    {
+      "type": "sports-hall",
+      "bounds": [
+        2.3,
+        2.4,
+        5.2,
+        6
+      ],
+      "floors": 3,
+      "height": 65,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        8.8,
+        2.4,
+        2.2,
+        2.3
+      ],
+      "floors": 4,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        11.6,
+        2.4,
+        2.2,
+        2.3
+      ],
+      "floors": 4,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        8.8,
+        6.2,
+        2.2,
+        2.3
+      ],
+      "floors": 4,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        11.6,
+        6.2,
+        2.2,
+        2.3
+      ],
+      "floors": 5,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        2.3,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "floors": 4,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        5.2,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "floors": 5,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        8.1,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "floors": 4,
+      "front": "v+"
+    },
+    {
+      "type": "mixed-building",
+      "bounds": [
+        11,
+        10.8,
+        2.2,
+        2.3
+      ],
+      "floors": 5,
+      "front": "v+"
+    }
+  ],
+  "parks": [
+    [
+      8.2,
+      9.1,
+      5.3,
+      1.2
+    ]
+  ],
+  "parking": [],
+  "features": [
+    {
+      "type": "street-facing-shopfront",
+      "u": 8.8,
+      "v": 4.699999999999999
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 11.6,
+      "v": 4.699999999999999
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 8.8,
+      "v": 8.5
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 11.6,
+      "v": 8.5
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 2.3,
+      "v": 13.100000000000001
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 5.2,
+      "v": 13.100000000000001
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 8.1,
+      "v": 13.100000000000001
+    },
+    {
+      "type": "street-facing-shopfront",
+      "u": 11,
+      "v": 13.100000000000001
+    },
+    {
+      "type": "swimming-pool-annex",
+      "bounds": [
+        2.3,
+        8.9,
+        4.4,
+        1.2
+      ]
+    },
+    {
+      "type": "pedestrian-shopping-street",
+      "bounds": [
+        2.1,
+        10.35,
+        12.15,
+        0.45
+      ]
+    }
+  ],
+  "counts": {
+    "buildings": 9,
+    "houses": 0,
+    "apartments": 8,
+    "parks": 1,
+    "parkingSpaces": 0,
+    "sportsSurfaces": 1,
+    "trees": 17
+  },
+  "roadLayout": "peripheral-ring",
+  "visualOverhang": {
+    "viewBox": "0 -120 1024 760",
+    "groundOrigin": [
+      512,
+      64
+    ]
+  }
+}
