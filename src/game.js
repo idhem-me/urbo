@@ -1,4 +1,4 @@
-import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT,setSectorTax,setServiceBudget,bankPolicy,loanQuote,borrow,repayDebt,renameCity,tutorialStep,TUTORIAL_STEPS,skipTutorial} from './engine.js';
+import {TYPES,maxLevel,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT,setSectorTax,setServiceBudget,bankPolicy,loanQuote,borrow,repayDebt,renameCity,tutorialStep,TUTORIAL_STEPS,skipTutorial} from './engine.js';
 import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
 import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
 import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS,PRIMARY_CATEGORIES,PRIMARY_ICONS,searchCatalog} from './catalog';
@@ -9,6 +9,7 @@ import {constructionProgress,constructionKey} from './construction';
 import {sceneColor} from './scene';
 import {createAssetRenderer} from './assets/renderer';
 import {GAME_ASSETS} from './assets/manifest';
+import {START_MIN,START_CENTER} from './board';
 import {money,tonnes} from './units';
 import {mountStatusTooltips} from './status-tooltip';
 import {buttonVariants} from './components/ui/button';
@@ -68,7 +69,7 @@ for(const sector of ['residential','commerce','office'])$('tax-'+sector).value=s
  renderAdmin(st);inspect();landInspect();
  $('level').textContent=pg.index+1;
  $('progression').textContent=pg.next?`Prochain niveau : ${pg.next.people} habitants.`:'Dernier niveau atteint.';
- $('territory').textContent=`${state.owned.length} / 81 cases. Case suivante : ${money(landPrice(state))}.`;
+ $('territory').textContent=`${state.owned.length} / ${GRID*GRID} cases.${state.owned.length<GRID*GRID?` Case suivante : ${money(landPrice(state))}.`:' Plateau complet.'}`;
  document.querySelectorAll('.catalog-tile').forEach(tile=>{
   const type=tile.dataset.type,cost=projectCost(type,1,state),missing=requirements(state,type);
   tile.querySelector('em').textContent=money(cost.money,true);tile.querySelector('.construction-time').textContent=projectDuration(type,1,state)/1000+' s';
@@ -96,10 +97,10 @@ function highlightTile(tile,active){
  ctx.fillStyle=isNight?(active?'rgba(255,255,255,.20)':'rgba(255,255,255,.10)'):(active?'rgba(255,255,255,.16)':'rgba(255,255,255,.08)');ctx.fill();
  ctx.strokeStyle=isNight?'#f8fafc':'#263c35';ctx.lineWidth=active?3:1.5;ctx.lineJoin='round';ctx.stroke();ctx.restore();
 }
-function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=paint('#cbded7');ctx.fillRect(0,0,W,H);const a=pos(-.7,-.7),b=pos(GRID,-.7),c=pos(GRID,GRID),d=pos(-.7,GRID);poly([[a.x,a.y],[b.x,b.y],[c.x,c.y+8],[d.x,d.y]],'#d3c9a0');poly([[a.x,a.y-5],[b.x,b.y-5],[c.x,c.y-5],[d.x,d.y-5]],'#d6deae');for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=pos(x,y);diamond(p.x,p.y,x===3||y===3||x===7||y===7?'#d6d4bf':(x+y)%2?'#a8bf80':'#b3c98c');if(x===3||y===3||x===7||y===7){ctx.fillStyle=paint('#eee9d5');ctx.fillRect(p.x-2,p.y-1,4,2);}else if(!owns(state,x,y)){diamond(p.x,p.y,adjacentLand(state,x,y)?'#a6b2a1':'#859b92');if(adjacentLand(state,x,y)){ctx.fillStyle=paint('#f6edcb');ctx.font='12px sans-serif';ctx.textAlign='center';drawIcon(ctx,'plus',p.x-5,p.y-5,10,'#f5f5f5');}}}for(let s=0;s<=(GRID-1)*2;s++)for(let x=0;x<GRID;x++){const y=s-x;if(y<0||y>=GRID)continue;const p=pos(x,y),b=state.buildings.find(b=>b.x===x&&b.y===y);if(b)building(p.x,p.y,b.type,unit/28,b.level);else if(state.projects.some(b=>b.x===x&&b.y===y)){if(!assetRenderer.draw(ctx,{type:'construction',level:1,x:p.x,y:p.y,unit,night:isNight})){diamond(p.x,p.y,'#d4af72');box(p.x,p.y,12,12,8,'#d0ae71');ctx.fillStyle=paint('#5b563b');ctx.font='12px sans-serif';drawIcon(ctx,'build',p.x-7,p.y-20,14,'#44403c');}}else if((x*11+y*3)%9===0&&validPlot(x,y)){if(!assetRenderer.draw(ctx,{type:'forest',level:1,x:p.x,y:p.y,unit,night:isNight}))tree(p.x,p.y,unit/35);}else if(validPlot(x,y)&&owns(state,x,y))assetRenderer.draw(ctx,{type:'desert',level:1,x:p.x,y:p.y,unit,night:isNight});}const p=pos(3,6);box(p.x,p.y+15,unit*.35,unit*.35,5,'#c0a77d');ctx.fillStyle=paint('#fff7de');ctx.fillRect(p.x+8,p.y-4,4,9);
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=paint('#cbded7');ctx.fillRect(0,0,W,H);const a=pos(-.7,-.7),b=pos(GRID,-.7),c=pos(GRID,GRID),d=pos(-.7,GRID);poly([[a.x,a.y],[b.x,b.y],[c.x,c.y+8],[d.x,d.y]],'#d3c9a0');poly([[a.x,a.y-5],[b.x,b.y-5],[c.x,c.y-5],[d.x,d.y-5]],'#d6deae');for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const p=pos(x,y);diamond(p.x,p.y,owns(state,x,y)?'#cfdabb':adjacentLand(state,x,y)?'#b8c5a7':'#a8b79d');}for(let s=0;s<=(GRID-1)*2;s++)for(let x=0;x<GRID;x++){const y=s-x;if(y<0||y>=GRID)continue;const p=pos(x,y);if(p.x < -unit*2||p.x > W+unit*2||p.y < -unit*2||p.y > H+unit*2)continue;const b=state.buildings.find(b=>b.x===x&&b.y===y);if(b)building(p.x,p.y,b.type,unit/28,b.level);else if(state.projects.some(b=>b.x===x&&b.y===y)){if(!assetRenderer.draw(ctx,{type:'construction',level:1,x:p.x,y:p.y,unit,night:isNight})){diamond(p.x,p.y,'#d4af72');box(p.x,p.y,12,12,8,'#d0ae71');ctx.fillStyle=paint('#5b563b');ctx.font='12px sans-serif';drawIcon(ctx,'build',p.x-7,p.y-20,14,'#44403c');}}else {ctx.save();ctx.globalAlpha=owns(state,x,y)?1:.5;assetRenderer.draw(ctx,{type:'desert',level:1,x:p.x,y:p.y,unit,night:isNight});ctx.restore();}}
  for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++)if(validPlot(x,y)&&!owns(state,x,y)&&adjacentLand(state,x,y)){const q=pos(x,y);ctx.save();ctx.fillStyle=isNight?'#20312b':'#f8faf7';ctx.beginPath();ctx.arc(q.x,q.y,6,0,Math.PI*2);ctx.fill();drawIcon(ctx,'plus',q.x-4,q.y-4,8,isNight?'#f8fafc':'#263c35');ctx.restore();}
  for(const [tile,active] of [[hover,false],[mapSelection,true]])if(tile&&validPlot(tile.x,tile.y))highlightTile(tile,active);if(guideTarget){const p=pos(guideTarget.x,guideTarget.y);ctx.save();ctx.strokeStyle=isNight?'#fde68a':'#735d25';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(p.x,p.y-unit*.5);ctx.lineTo(p.x+unit,p.y);ctx.lineTo(p.x,p.y+unit*.5);ctx.lineTo(p.x-unit,p.y);ctx.closePath();ctx.stroke();ctx.restore();}}
-function resize(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);unit=Math.min(W/24,Math.max(160,H-240)/13)*zoom;origin={x:W*.5+pan.x,y:H*.5-unit*4.8+pan.y};draw();}
+function resize(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;W=r.width;H=r.height;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);unit=Math.min(W/24,Math.max(160,H-240)/13)*zoom;origin={x:W*.5+pan.x,y:H*.5-unit*START_CENTER+pan.y};draw();}
 function cell(event){const r=canvas.getBoundingClientRect(),dx=(event.clientX-r.left-origin.x)/unit,dy=(event.clientY-r.top-origin.y)/(unit*.5);return {x:Math.round((dx+dy)/2),y:Math.round((dy-dx)/2)};}
 function place(x,y){if(changingAccount)return;
  mapSelection=validPlot(x,y)?{x,y}:null;draw();
@@ -110,15 +111,15 @@ function place(x,y){if(changingAccount)return;
  inspected=null;if(!selected){message('Choisissez un bâtiment dans Construire.');return;}
  const err=build(state,selected,x,y);if(err)message(err,'danger');else $('toast').hidden=true;save();update();draw();
 }
-let keyboardCell={x:2,y:2};
+let keyboardCell={x:START_MIN+1,y:START_MIN+1};
 canvas.addEventListener('keydown',e=>{const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(moves[e.key]){e.preventDefault();keyboardCell={x:Math.max(0,Math.min(GRID-1,keyboardCell.x+moves[e.key][0])),y:Math.max(0,Math.min(GRID-1,keyboardCell.y+moves[e.key][1]))};hover=keyboardCell;canvas.setAttribute('aria-label',`Case ${keyboardCell.x+1}, ${keyboardCell.y+1}. Entrée pour agir.`);draw();}else if(e.key==='Enter'||e.key===' '){e.preventDefault();place(keyboardCell.x,keyboardCell.y);}},{signal:lifetime.signal});
 const pointers=new Map();let gesture=null,dragged=false;
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture?.(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});dragged=false;gesture={x:e.clientX,y:e.clientY};if(pointers.size>1)dragged=true;},{signal:lifetime.signal});
 canvas.addEventListener('pointermove',e=>{
  if(!pointers.has(e.pointerId)){hover=e.pointerType==='touch'?null:cell(e);canvas.style.cursor=hover&&validPlot(hover.x,hover.y)?'pointer':'grab';draw();return;}
  const old=pointers.get(e.pointerId);const previous=[...pointers.values()];pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
- if(pointers.size===2){const current=[...pointers.values()],before=Math.hypot(previous[0].x-previous[1].x,previous[0].y-previous[1].y),after=Math.hypot(current[0].x-current[1].x,current[0].y-current[1].y);if(before>0)zoom=Math.max(.7,Math.min(6,zoom*after/before));dragged=true;}
- else {const dx=e.clientX-old.x,dy=e.clientY-old.y;if(gesture&&Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>6)dragged=true;if(dragged){hover=null;canvas.style.cursor='grabbing';pan.x=Math.max(-W,Math.min(W,pan.x+dx));pan.y=Math.max(-H*.6,Math.min(H*.6,pan.y+dy));}}
+ if(pointers.size===2){const current=[...pointers.values()],before=Math.hypot(previous[0].x-previous[1].x,previous[0].y-previous[1].y),after=Math.hypot(current[0].x-current[1].x,current[0].y-current[1].y);if(before>0)zoom=Math.max(.4,Math.min(6,zoom*after/before));dragged=true;}
+ else {const dx=e.clientX-old.x,dy=e.clientY-old.y;if(gesture&&Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>6)dragged=true;if(dragged){hover=null;canvas.style.cursor='grabbing';pan.x=Math.max(-Math.max(W,GRID*unit),Math.min(Math.max(W,GRID*unit),pan.x+dx));pan.y=Math.max(-Math.max(H*.6,GRID*unit*.5),Math.min(Math.max(H*.6,GRID*unit*.5),pan.y+dy));}}
  resize();
 },{signal:lifetime.signal});
 canvas.addEventListener('pointerup',e=>{const tap=!dragged&&pointers.size===1;pointers.delete(e.pointerId);if(tap){const p=cell(e);place(p.x,p.y);}if(pointers.size)dragged=true;else canvas.style.cursor='grab';},{signal:lifetime.signal});
@@ -146,7 +147,7 @@ function renderCatalog(){
   b.onclick=()=>{selected=type;renderCatalog();$('placement').hidden=false;$('placement-label').textContent=buildingName(type);closeSheet('build-sheet');message('Touchez une case libre.');update();};
   info.type='button';info.id=tipId+'-trigger';info.className='tile-info';info.innerHTML=iconMarkup('info');info.setAttribute('aria-label',`Détails : ${buildingName(type)}`);info.setAttribute('aria-describedby',tipId);info.setAttribute('aria-expanded','false');
   tip.id=tipId;tip.className='catalog-tooltip';tip.hidden=true;tip.setAttribute('role','tooltip');tip.setAttribute('popover','auto');
-  tip.innerHTML=`<b>${buildingName(type)}</b><p>${describe(effects({type,level:1}))}${['mall','supermarket'].includes(type)?' · Parking inclus.':''}</p><p class="tooltip-cost"></p><p class="tooltip-condition"></p>`;
+  tip.innerHTML=`<b>${buildingName(type)}</b><p>${describe(effects({type,level:1}))}${['mall','supermarket'].includes(type)?' · Parking inclus.':''}</p><p>${maxLevel(type)} niveaux disponibles.</p><p class="tooltip-cost"></p><p class="tooltip-condition"></p>`;
   info.onclick=e=>{e.stopPropagation();info.getAttribute('aria-expanded')==='true'?closeTooltips():showTooltip(info,tip);};
   info.onpointerenter=e=>{if(e.pointerType==='mouse')showTooltip(info,tip);};
   info.onfocus=()=>{if(info.matches(':focus-visible'))showTooltip(info,tip);};
@@ -181,7 +182,7 @@ function inspect(){
  $('building-effects').textContent=describe(effects(b));
  const cost=upgradeCost(b,state),pending=state.projects.some(p=>p.x===b.x&&p.y===b.y);
  const materials=cost===null?null:projectCost(b.type,b.level+1,state),missing=cost===null?[]:requirements(state,b.type,b.level+1);
- $('upgrade-effects').textContent=cost===null?'Niveau maximum.':`Niveau ${b.level+1} : ${brief(effects({...b,level:b.level+1}))}. Frais : ${money(effects({...b,level:b.level+1}).upkeep)}/min.`;
+ $('upgrade-effects').textContent=cost===null?`Niveau maximum · ${maxLevel(b.type)} / ${maxLevel(b.type)}.`:`Niveau ${b.level+1} : ${brief(effects({...b,level:b.level+1}))}. Frais : ${money(effects({...b,level:b.level+1}).upkeep)}/min.`;
  buttonLabel('upgrade',cost===null?'Niveau maximum':pending?'En travaux':`Améliorer · ${money(cost)}`);
  const reasons=[];
  if(materials){
@@ -271,7 +272,7 @@ $('city-name').value=state.cityName;
 $('city-name-form').onsubmit=e=>{e.preventDefault();const err=renameCity(state,$('city-name').value);if(!err)$('city-name').value=state.cityName;message(err||'Ville renommée.',err?'danger':'success');save();update();};
 $('open-bank').onclick=()=>openSheet('bank-sheet');
 $('repay-debt').onclick=()=>{const err=repayDebt(state,Math.max(0,Math.min(state.money,stats(state).debt)));message(err||'Dette remboursée.',err?'danger':'success');save();update();};
-function applyCityState(next){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=next;guideTarget=null;hover=null;mapSelection=null;lastTutorialStep=state.tutorial.step;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Résidence';searchQuery='';searchAcross=false;$('catalog-search').value='';$('clear-search').hidden=true;previousProjects=new Map(state.projects.map(p=>[constructionKey(p),p]));$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();}
+function applyCityState(next){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=next;keyboardCell={x:START_MIN+1,y:START_MIN+1};guideTarget=null;hover=null;mapSelection=null;lastTutorialStep=state.tutorial.step;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Résidence';searchQuery='';searchAcross=false;$('catalog-search').value='';$('clear-search').hidden=true;previousProjects=new Map(state.projects.map(p=>[constructionKey(p),p]));$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();}
 function restartGame(){applyCityState(initial());save();update();resize();message('Ville recommencée. Les autres villes sont conservées.','success');}
 function setSyncStatus(text,status='neutral'){cloudStatus=text;cloudKind=status;if($('cities-sync'))statusNote('cities-sync',text,status);}
 function renderCities(){
@@ -307,7 +308,7 @@ $('restart').onclick=restartGame;
 $('start-new').onclick=()=>openSheet('reset-sheet');
 $('reset-confirm').onclick=restartGame;
 $('cancel-reset').onclick=()=>closeSheet('reset-sheet');
-function nextGuidePlot(){for(let y=0;y<5;y++)for(let x=0;x<5;x++)if(validPlot(x,y)&&owns(state,x,y)&&![...state.buildings,...state.projects].some(b=>b.x===x&&b.y===y))return {x,y};return null;}
+function nextGuidePlot(){for(const key of state.owned){const [x,y]=key.split(',').map(Number);if(![...state.buildings,...state.projects].some(b=>b.x===x&&b.y===y))return {x,y};}return null;}
 function renderTutorial(){
  const step=tutorialStep(state),active=Boolean(step)&&!state.gameOver;$('tutorial').hidden=!active;document.querySelector('.game-screen').dataset.guided=String(active);
  if(!active){guideTarget=null;if(lastTutorialStep<TUTORIAL_STEPS.length&&state.tutorial.step===TUTORIAL_STEPS.length)message('Ville lancée ! Réinvestissez vos bénéfices.','success');lastTutorialStep=state.tutorial.step;return;}

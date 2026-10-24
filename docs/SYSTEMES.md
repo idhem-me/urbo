@@ -28,9 +28,9 @@ La mairie agit sur la collecte fiscale. Le tableau administratif présente couve
 
 ## Amélioration et chantiers
 
-Tous les types vont du niveau 1 à 3. Les capacités, productions et consommations augmentent proportionnellement au niveau ; les entretiens augmentent désormais plus vite. Les coûts et effets du niveau suivant sont montrés avant validation. Chaque projet réserve sa parcelle et consomme immédiatement pièces, bois et pierre.
+Maison, résidence, boutique avec logements et bureaux ont 3 niveaux ; les 23 autres types en ont 2. Le dernier niveau des types à 2 niveaux fournit une capacité, une production et une consommation triples du niveau 1. Son entretien reste celui d’un niveau 2 (× 2,7), pour éviter une hausse brutale des charges des sauvegardes existantes. Voir PROGRESSION.md pour les prix et conditions. Les coûts et effets du niveau suivant sont montrés avant validation. Chaque projet réserve sa parcelle et consomme immédiatement pièces, bois et pierre.
 
-Les délais dépendent désormais du type et du niveau, voir `PROGRESSION.md`. Un atelier achevé ajoute une place de chantier par niveau, même si sa production est ralentie : cela représente la capacité artisanale installée. Aucun remboursement ou abandon pour l’instant. Les projets sont sauvegardés et terminent aussi pendant l’absence. Le moteur intègre les ressources par pas de dix secondes maximum ; des écarts d’arrondi de simulation sont possibles selon la fréquence de reprise.
+Les délais dépendent désormais du type et du niveau, voir `PROGRESSION.md`. Un atelier achevé ajoute 1 place de chantier au niveau 1, puis 3 au niveau 2, même si sa production est ralentie : cela représente la capacité artisanale installée. Aucun remboursement ou abandon pour l’instant. Les projets sont sauvegardés et terminent aussi pendant l’absence. Le moteur intègre les ressources par pas de dix secondes maximum ; des écarts d’arrondi de simulation sont possibles selon la fréquence de reprise.
 
 ## Suite de production
 

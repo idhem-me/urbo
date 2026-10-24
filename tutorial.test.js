@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {initial,stats,build,upgrade,accrue,restore,tutorialStep,TUTORIAL_STEPS,projectDuration,skipTutorial,validPlot,owns} from './src/engine.js';
 import {sceneColor} from './src/scene.js';
 const s=initial(0),baseIncome=stats(s).income;let now=0;
-const empty=()=>{for(let y=0;y<5;y++)for(let x=0;x<5;x++)if(validPlot(x,y)&&owns(s,x,y)&&!s.buildings.some(b=>b.x===x&&b.y===y))return {x,y};};
+const empty=()=>{for(let y=0;y<24;y++)for(let x=0;x<24;x++)if(validPlot(x,y)&&owns(s,x,y)&&!s.buildings.some(b=>b.x===x&&b.y===y))return {x,y};};
 for(const type of ['house','house','solar','farm','shop']){
  const before=s.money,step=tutorialStep(s),cell=empty();assert.equal(step.type,type);assert.equal(projectDuration(type,1,s),3000);assert.equal(build(s,type,cell.x,cell.y,now),null);const finish=s.projects.at(-1).finish;assert.equal(finish-now,3000);accrue(s,finish);now=finish;assert.ok(s.money>before-400000);assert.equal(s.tutorial.step,TUTORIAL_STEPS.indexOf(step)+1);
 }

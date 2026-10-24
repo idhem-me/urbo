@@ -7,12 +7,12 @@ Une case représente un quartier, conformément au choix utilisateur. Les bâtim
 ## Pack intégré
 
 - 58 variantes réparties sur les 27 types de bâtiments.
-- 3 décors : chantier, désert et forêt.
+- 3 décors fournis : chantier, désert et forêt. La forêt reste dans le catalogue mais n’est pas utilisée sur le plateau : toutes les cases vides sont des terrains vagues.
 - 61 SVG originaux, sans modification des dessins, accompagnés de leurs JSON.
 - Poids total des SVG : 3 354 182 octets (environ 3,35 Mo), chargés à la demande.
 - Pas de variantes nuit : assombrissement provisoire par le moteur.
 - 4 types disposent de 3 niveaux : maison, résidence, boutique avec logements, bureaux.
-- Les 23 autres ont 2 niveaux : au niveau de gestion 3, on conserve le visuel 2 et on affiche le badge 3. Aucun niveau graphique supplémentaire n’a été inventé.
+- Les 23 autres ont 2 niveaux de gestion et 2 visuels. Le moteur ne propose plus de niveau 3 pour ces types. Les sauvegardes anciennes sont migrées avec remboursement des améliorations retirées ; voir PROGRESSION.md.
 
 Les mentions de validation dans les fichiers fournis sont des métadonnées du pack, pas des instructions au moteur.
 
@@ -34,7 +34,7 @@ L’import contrôle l’archive et tous les SVG avant d’écrire : noms, doubl
 
 Tous les sols ont le même losange : centre (512, 288), largeur 896, hauteur 448. Les viewBox diffèrent : certains commencent à Y = −80, −100, −120 ou −300. Le renderer tient compte de cet offset pour conserver les hauts bâtiments et leur ancrage. Il ne recadre pas les SVG.
 
-Les routes actuelles de la carte sont conservées ; les routes internes aux quartiers appartiennent aux illustrations. Elles ne créent pas encore un réseau routier simulé. Le zoom permet de voir les détails des quartiers.
+Le plateau de 24 × 24 cases n’a plus de routes réservées ni de cases non constructibles. Les routes internes aux quartiers appartiennent aux illustrations ; elles ne créent pas un réseau routier simulé. Les 16 cases initiales sont au centre. Le zoom et le déplacement permettent d’explorer le plateau.
 
 ## Catalogue de contrôle
 

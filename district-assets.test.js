@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DISTRICT_ASSETS} from './src/assets/districts.js';
 import {BUILDING_ASSETS,SCENERY_ASSETS,resolveAsset,assetRect} from './src/assets/manifest.js';
-import {TYPES} from './src/engine.js';
+import {TYPES,maxLevel} from './src/engine.js';
 assert.equal(DISTRICT_ASSETS.length,61);assert.equal(DISTRICT_ASSETS.filter(a=>a.kind==='building').length,58);
 assert.equal(Object.keys(BUILDING_ASSETS).length,Object.keys(TYPES).length);
 assert.deepEqual(Object.keys(SCENERY_ASSETS).sort(),['construction','desert','forest']);
@@ -19,9 +19,11 @@ for(const asset of DISTRICT_ASSETS){
  assert.equal(rect.width,1024);assert.equal(rect.height,asset.viewBox.height);
  assert.equal(asset.ground.height,asset.ground.width/2);
 }
-for(const type of Object.keys(TYPES))for(const level of [1,2,3]){
+for(const type of Object.keys(TYPES))for(let level=1;level<=maxLevel(type);level++){
  const asset=resolveAsset(type,level);assert.ok(asset,`${type} level ${level}`);
- assert.ok(asset.level<=level);assert.equal(asset.type,type);
+ assert.equal(asset.level,level);assert.equal(asset.type,type);
 }
 assert.equal(resolveAsset('fire',3).level,2);assert.equal(resolveAsset('house',3).level,3);
 console.log('61 quartiers : SVG sûrs, emprises, marges hautes et couverture de tous les types validés.');
+
+for(const type of Object.keys(TYPES))assert.equal(Math.max(...Object.keys(BUILDING_ASSETS[type]).map(Number)),maxLevel(type));

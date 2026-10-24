@@ -53,7 +53,7 @@ L’interface utilise une palette zinc (blanc, noir, gris). La carte et les indi
 
 ## Contenu du prototype
 
-27 bâtiments améliorables jusqu’au niveau 3, 5 catégories principales, 16 cases acquises au départ sur 81 constructibles. Logements, mairie, pompiers, police, ambulances, hôpital, charbon, solaire, ressources, ateliers, usines, écoles, bureaux, sports et commerces avec logements ou parking.
+27 bâtiments améliorables sur 2 ou 3 niveaux selon leurs assets, 5 catégories principales, 16 cases acquises au centre d’un plateau de 576 cases constructibles, sans routes réservées. Logements, mairie, pompiers, police, ambulances, hôpital, charbon, solaire, ressources, ateliers, usines, écoles, bureaux, sports et commerces avec logements ou parking.
 
 Le moteur gère emploi, formation, énergie, attractivité, impôts, entretien, ressources et chantiers simultanés. Les bâtiments avancés se débloquent selon la population. Les améliorations exigent de bonnes conditions et coûtent davantage. Les achats de terrain doivent être voisins du territoire et leur prix augmente de 12 % par acquisition. Les capacités et coûts sont expliqués dans `docs/PROGRESSION.md` et `docs/SYSTEMES.md`.
 
