@@ -53,7 +53,7 @@ L’interface utilise une palette zinc (blanc, noir, gris). La carte et les indi
 
 ## Contenu du prototype
 
-27 bâtiments améliorables jusqu’au niveau 3, 9 catégories, 16 cases acquises au départ sur 81 constructibles. Logements, mairie, pompiers, police, ambulances, hôpital, charbon, solaire, ressources, ateliers, usines, écoles, bureaux, sports et commerces avec logements ou parking.
+27 bâtiments améliorables jusqu’au niveau 3, 5 catégories principales, 16 cases acquises au départ sur 81 constructibles. Logements, mairie, pompiers, police, ambulances, hôpital, charbon, solaire, ressources, ateliers, usines, écoles, bureaux, sports et commerces avec logements ou parking.
 
 Le moteur gère emploi, formation, énergie, attractivité, impôts, entretien, ressources et chantiers simultanés. Les bâtiments avancés se débloquent selon la population. Les améliorations exigent de bonnes conditions et coûtent davantage. Les achats de terrain doivent être voisins du territoire et leur prix augmente de 12 % par acquisition. Les capacités et coûts sont expliqués dans `docs/PROGRESSION.md` et `docs/SYSTEMES.md`.
 
@@ -139,3 +139,13 @@ La migration crée une ligne par ville avec une politique d’accès au proprié
 La synchronisation regroupe les modifications toutes les cinq secondes environ ; **Synchroniser** permet aussi de la déclencher. Une panne réseau garde les modifications dans le cache du compte. Si deux appareils modifient la même ville, une copie locale est conservée au lieu d’écraser l’autre version. Le compteur de révision protège les mises à jour concurrentes.
 
 Les migrations SQL et la connexion à votre Supabase restent à exécuter/valider dans votre projet : aucun accès administrateur à votre base n’est configuré dans cet environnement. Les tests automatisés couvrent le stockage local, les conflits et la synchronisation simulée. Voir `docs/MULTI_VILLES.md`.
+
+## Version 0.10 : recherche et suivi des chantiers
+
+Construire propose cinq groupes compacts : Résidence, Commerce, Industrie, Bureaux, Services. Les ressources et l’énergie sont dans Industrie ; les écoles, secours et loisirs dans Services. La boutique avec logements reste dans Résidence et Commerce.
+
+La recherche ignore les accents et les majuscules. Saisir un mot cherche dans tous les bâtiments ; choisir ensuite une catégorie filtre les résultats. Le bouton X efface la recherche. Les titres de panneaux ont la même taille que les boutons du menu. Les champs de recherche et catégories restent en haut du contenu lors du défilement.
+
+Le haut de l’écran est une seule tuile : compteurs en colonnes fixes, chiffres tabulaires et indicateurs regroupés. Les grands montants restent compacts et leur valeur exacte est disponible dans le libellé accessible et l’infobulle.
+
+Une barre persistante suit le chantier qui finit en premier : nom, pourcentage et temps restant. Si d’autres chantiers sont actifs, elle indique leur nombre ; toucher la barre ouvre leur détail dans Ville. À la livraison, la barre passe au chantier suivant ou disparaît avec une confirmation courte. Le guide, les messages et le placement sont empilés sans se chevaucher. Le suivi conserve les horaires de départ et la durée lors des sauvegardes. Aucun changement de base Supabase n’est requis pour cette version.

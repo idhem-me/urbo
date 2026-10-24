@@ -22,17 +22,18 @@ export default function App(){
    </div>
   </section>
   <div className="map-tools"><Button id="settings" variant="outline" size="icon" aria-label="Réglages"><Icon name="settings"/></Button><Button id="zoom" variant="outline" size="icon" aria-label="Zoom"><Icon name="plus"/></Button></div>
-  <section id="tutorial" className="tutorial-card" aria-label="Début guidé" hidden><div className="tutorial-heading"><span id="guide-step"/><Button id="skip-tutorial" variant="ghost" size="icon" aria-label="Passer le guide"><Icon name="close"/></Button></div><h3 id="guide-title" aria-live="polite"/><p id="guide-text"/><small id="guide-reward"/><Button id="guide-action" variant="default">Commencer</Button></section>
+  <div className="activity-dock"><section id="tutorial" className="tutorial-card" aria-label="Début guidé" hidden><div className="tutorial-heading"><span id="guide-step"/><Button id="skip-tutorial" variant="ghost" size="icon" aria-label="Passer le guide"><Icon name="close"/></Button></div><h3 id="guide-title" aria-live="polite"/><p id="guide-text"/><small id="guide-reward"/><Button id="guide-action" variant="default">Commencer</Button></section>
   <p id="toast" role="status">Choisissez Construire pour commencer.</p>
-  <div id="placement" className="placement" hidden><span id="placement-label"/><Button id="cancel-placement" variant="ghost" size="icon" aria-label="Annuler la construction"><Icon name="close"/></Button></div>
+  <section id="construction-status" className="construction-progress" hidden aria-label="Chantier en cours"><button id="construction-open" type="button" aria-label="Voir les chantiers"/><span className="construction-heading"><span className="construction-label"><Icon name="build"/><span id="construction-name"/></span><span id="construction-time"/></span><span className="construction-track" id="construction-track" role="progressbar" aria-label="Progression du chantier" aria-valuemin={0} aria-valuemax={100}><i id="construction-fill"/></span><span className="construction-footer"><span id="construction-percent"/><span id="construction-count"/></span></section>
+  <div id="placement" className="placement" hidden><span id="placement-label"/><Button id="cancel-placement" variant="ghost" size="icon" aria-label="Annuler la construction"><Icon name="close"/></Button></div></div>
   <nav className="bottom-nav" aria-label="Menu">
    <Button data-open-sheet="build-sheet"><Icon name="build"/>Construire</Button>
    <Button data-open-sheet="city-sheet"><Icon name="townhall"/>Ville</Button>
    <Button data-open-sheet="stock-sheet"><Icon name="stock"/>Stocks</Button>
   </nav>
   <BottomSheet id="build-sheet" title="Construire">
-   <p id="build-blocked" className="status-note" hidden/><nav id="categories" aria-label="Catégories"/>
-   <h3 id="category-title">Logements</h3><div id="catalog" className="catalog"/>
+   <div className="catalog-controls"><div className="catalog-search"><Icon name="search"/><label htmlFor="catalog-search" className="sr-only">Rechercher un bâtiment</label><input id="catalog-search" type="search" placeholder="Rechercher un bâtiment" autoComplete="off"/><Button id="clear-search" variant="ghost" size="icon" aria-label="Effacer la recherche" hidden><Icon name="close"/></Button></div><p id="build-blocked" className="status-note" hidden/><nav id="categories" aria-label="Catégories"/>
+   <div className="catalog-heading"><h3 id="category-title">Résidence</h3><span id="catalog-count" role="status"/></div></div><p id="catalog-empty" className="muted" hidden>Aucun bâtiment trouvé. Essayez un autre mot ou une autre catégorie.</p><div id="catalog" className="catalog"/>
 
 
   </BottomSheet>

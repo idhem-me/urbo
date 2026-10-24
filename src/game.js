@@ -1,10 +1,11 @@
 import {TYPES,initial,stats,accrue,build,restore,validPlot,effects,upgrade,upgradeCost,setTax,GRID,CATEGORIES,RESOURCES,PRICES,projectCost,trade,owns,adjacentLand,landPrice,buyLand,requirements,progression,projectDuration,demands,demolish,TRADE_AMOUNT,setSectorTax,setServiceBudget,bankPolicy,loanQuote,borrow,repayDebt,renameCity,tutorialStep,TUTORIAL_STEPS,skipTutorial} from './engine.js';
 import {iconMarkup,drawIcon,CATEGORY_ICONS} from './icons';
 import {STATUS,statusBadge,coverageStatus,energyStatus,incomeStatus,budgetStatus,stockStatus} from './status';
-import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS} from './catalog';
+import {buildingCategories,buildingFamilies,catalogFamily,CATEGORY_FAMILIES,FAMILY_LABELS,PRIMARY_CATEGORIES,PRIMARY_ICONS,searchCatalog} from './catalog';
 import {CityStore,GUEST} from './city-store';
 import {CitySync} from './city-sync';
 import {mountSettings} from './settings';
+import {constructionProgress,constructionKey} from './construction';
 import {sceneColor} from './scene';
 import {money,tonnes} from './units';
 import {buttonVariants} from './components/ui/button';
@@ -16,7 +17,8 @@ let cityStore=new CityStore({storage}),citySync=null,changingAccount=false,accou
 try{cityStore.ensureGuest();}catch{}
 let state=cityStore.active?cityStore.activeState():initial();
 let inspected=null,selectedLand=null,toastTimer;
-let category='Logements',offerKey='',guideTarget=null,lastTutorialStep=state.tutorial.step,isNight=document.documentElement.classList.contains('dark');
+let category='Résidence',searchQuery='',searchAcross=false,offerKey='',guideTarget=null,lastTutorialStep=state.tutorial.step,isNight=document.documentElement.classList.contains('dark');
+let previousProjects=new Map(state.projects.map(p=>[constructionKey(p),p]));
 const paint=color=>sceneColor(color,isNight);
 let selected=null,zoom=1.3,pan={x:0,y:0},W=0,H=0,unit=30,origin={x:0,y:0},hover=null;
 function buildingName(type){return ({fire:'Pompiers',police:'Police',ambulance:'Ambulances',coal:'Charbon',solar:'Solaire',oil:'Pétrole',farm:'Ferme',workshop:'Atelier',football:'Foot',tennis:'Tennis',gym:'Salle de sport',mixedShop:'Boutique + logements',supermarket:'Supermarché',mall:'Centre commercial'})[type]||TYPES[type].name;}
@@ -47,11 +49,11 @@ function message(text,status='neutral'){
 }
 function save(){if(changingAccount)return false;try{cityStore.save(state);citySync?.schedule();$('save').textContent=cityStore.owner===GUEST?'Sauvegarde locale':'Copie locale du compte';$('save').dataset.status='success';$('save').classList.add('status-badge');return true;}catch{$('save').textContent='Sauvegarde indisponible';$('save').dataset.status='danger';$('save').classList.add('status-badge');return false;}}
 function update(){
- if(changingAccount)return;renderCities();renderTutorial();
+ if(changingAccount)return;renderCities();renderTutorial();renderConstruction();
  const st=stats(state),pg=progression(state);
- $('money').textContent=money(state.money,true);const budget=budgetStatus(state.money,st.income);$('money').parentElement.dataset.status=budget;$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)} · ${STATUS[budget].label}`);$('money').parentElement.title=`Budget : ${STATUS[budget].label}`;
+ $('money').textContent=money(state.money,true);const budget=budgetStatus(state.money,st.income);$('money').parentElement.dataset.status=budget;$('money').parentElement.setAttribute('aria-label',`Budget : ${money(state.money)} · ${STATUS[budget].label}`);$('money').parentElement.title=`Budget : ${money(state.money)} · ${STATUS[budget].label}`;
  $('people').textContent=fmt(st.people);$('city-name-display').textContent=state.cityName;document.title=state.cityName+' · Urbo';
- $('income').textContent=(st.income>=0?'+':'−')+money(Math.abs(st.income),true)+'/min';const flow=incomeStatus(st.income);$('income').parentElement.dataset.status=flow;$('income').parentElement.setAttribute('aria-label',`Solde : ${money(st.income)} par minute · ${STATUS[flow].label}`);$('income').parentElement.title=`Solde : ${STATUS[flow].label}`;
+ $('income').textContent=(st.income>=0?'+':'−')+money(Math.abs(st.income),true)+'/min';const flow=incomeStatus(st.income);$('income').parentElement.dataset.status=flow;$('income').parentElement.setAttribute('aria-label',`Solde : ${money(st.income)} par minute · ${STATUS[flow].label}`);$('income').parentElement.title=`Solde : ${money(st.income)}/min · ${STATUS[flow].label}`;
  $('jobs').textContent=`${st.employed} / ${st.jobs}`;
  $('employment').textContent=`${st.unemployment} % sans emploi`;
  $('appeal').textContent=st.attractiveness+' / 100';
@@ -91,7 +93,7 @@ function place(x,y){if(changingAccount)return;
  const existing=state.buildings.find(b=>b.x===x&&b.y===y);
  if(existing){inspected=existing;$('demolition-confirm').hidden=true;inspect();openSheet('building-sheet');return;}
  inspected=null;if(!selected){message('Choisissez un bâtiment dans Construire.');return;}
- const err=build(state,selected,x,y);message(err||`Travaux : ${buildingName(selected)}.`,err?'danger':'success');save();update();draw();
+ const err=build(state,selected,x,y);if(err)message(err,'danger');else $('toast').hidden=true;save();update();draw();
 }
 let keyboardCell={x:2,y:2};
 canvas.addEventListener('keydown',e=>{const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(moves[e.key]){e.preventDefault();keyboardCell={x:Math.max(0,Math.min(GRID-1,keyboardCell.x+moves[e.key][0])),y:Math.max(0,Math.min(GRID-1,keyboardCell.y+moves[e.key][1]))};hover=keyboardCell;canvas.setAttribute('aria-label',`Case ${keyboardCell.x+1}, ${keyboardCell.y+1}. Entrée pour agir.`);draw();}else if(e.key==='Enter'||e.key===' '){e.preventDefault();place(keyboardCell.x,keyboardCell.y);}},{signal:lifetime.signal});
@@ -119,7 +121,8 @@ function showTooltip(trigger,tip){
 }
 function renderCatalog(){
  closeTooltips();$('catalog').replaceChildren();
- for(const [type] of Object.entries(TYPES).filter(([type])=>buildingCategories(type).includes(category))){
+ const results=searchCatalog(category,searchQuery,{global:Boolean(searchQuery)&&searchAcross});$('catalog-empty').hidden=results.length>0;$('catalog-count').textContent=results.length+' bâtiment'+(results.length>1?'s':'');$('category-title').textContent=searchQuery&&searchAcross?'Résultats':category;
+ for(const type of results){
   const tile=document.createElement('article'),b=document.createElement('button'),info=document.createElement('button'),tip=document.createElement('div');
   const cost=projectCost(type,1,state),tipId='info-'+type,families=buildingFamilies(type);
   tile.className='catalog-tile';tile.dataset.type=type;tile.dataset.family=catalogFamily(type,category);
@@ -144,7 +147,9 @@ function brief(e){
  return parts.slice(0,2).join(' · ');
 }
 $('demand').replaceChildren();$('categories').replaceChildren();
-for(const name of CATEGORIES){const b=document.createElement('button');b.className=buttonVariants({variant:'outline',size:'sm'});b.dataset.category=name;b.dataset.family=CATEGORY_FAMILIES[name];b.innerHTML=iconMarkup(CATEGORY_ICONS[name])+`<span>${name}</span>`;b.setAttribute('aria-pressed',String(category===name));b.onclick=()=>{category=name;$('category-title').textContent=name;document.querySelectorAll('#categories button').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));renderCatalog();update();};$('categories').append(b);}
+for(const name of PRIMARY_CATEGORIES){const b=document.createElement('button');b.className=buttonVariants({variant:'outline',size:'sm'});b.dataset.category=name;b.dataset.family=CATEGORY_FAMILIES[name];b.innerHTML=iconMarkup(PRIMARY_ICONS[name])+`<span>${name}</span>`;b.setAttribute('aria-pressed',String(category===name&&!searchAcross));b.onclick=()=>{category=name;searchAcross=false;$('category-title').textContent=name;document.querySelectorAll('#categories button').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));renderCatalog();update();};$('categories').append(b);}
+$('catalog-search').oninput=e=>{searchQuery=e.target.value;searchAcross=Boolean(searchQuery.trim());$('clear-search').hidden=!searchQuery;for(const b of document.querySelectorAll('[data-category]'))b.setAttribute('aria-pressed',String(!searchAcross&&b.dataset.category===category));renderCatalog();update();};
+$('clear-search').onclick=()=>{$('catalog-search').value='';searchQuery='';searchAcross=false;$('clear-search').hidden=true;for(const b of document.querySelectorAll('[data-category]'))b.setAttribute('aria-pressed',String(b.dataset.category===category));renderCatalog();update();$('catalog-search').focus();};
 renderCatalog();
 $('zoom').onclick=()=>{zoom=zoom<1.8?2:1.3;$('zoom').innerHTML=iconMarkup(zoom<1.8?'plus':'minus');resize();};$('soundless').onclick=()=>openSheet('help');$('export').onclick=()=>{accrue(state);const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=state.cityName.replace(/[^a-zA-Z0-9-]/g,'-')+'-sauvegarde.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 function describe(e){
@@ -173,7 +178,7 @@ function inspect(){
  statusNote('upgrade-reason',pending?'Amélioration en cours.':missing.length?missing.join(' · '):reasons.join(' '),pending?'neutral':missing.length||reasons.length?'warning':'neutral');
  $('upgrade').disabled=Boolean(state.gameOver)||state.money<0||cost===null||pending||missing.length>0||reasons.length>0;$('demolish').disabled=pending;
 }
-$('upgrade').onclick=()=>{if(!inspected)return;const err=upgrade(state,inspected.x,inspected.y);message(err||'Amélioration en cours.',err?'danger':'success');save();update();draw();};
+$('upgrade').onclick=()=>{if(!inspected)return;const err=upgrade(state,inspected.x,inspected.y);if(err)message(err,'danger');else $('toast').hidden=true;save();update();draw();};
 $('demolish').onclick=()=>{$('demolition-confirm').hidden=false;};
 $('cancel-demolish').onclick=()=>{$('demolition-confirm').hidden=true;};
 $('confirm-demolish').onclick=()=>{if(!inspected)return;const err=demolish(state,inspected.x,inspected.y);if(!err){inspected=null;closeSheet('building-sheet');}message(err||'Bâtiment détruit.',err?'danger':'success');save();update();draw();};
@@ -185,6 +190,14 @@ const themeObserver=new MutationObserver(()=>{const next=document.documentElemen
 const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{if(changingAccount)return;accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{if(changingAccount)return;accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
 
 function specialBuilding(x,y,type,scale,level){const t=TYPES[type];ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);const colors={'Administration':'#c5cbd6','Secours':'#e8cdc3','Énergie':'#839fa0','Ressources':'#b5b488','Industrie':'#a8a5a0','Éducation':'#a9bdcc','Loisirs':'#8eaf78','Commerce':'#e6c69a'};if(['football','tennis','stadium','farm','solar'].includes(type)){diamond(0,0,type==='solar'?'#547f9e':'#7ea46a');ctx.strokeStyle='#f3ecd3';ctx.strokeRect(-12,-6,24,12);if(type==='solar'){for(let i=-10;i<12;i+=7){ctx.beginPath();ctx.moveTo(i,-6);ctx.lineTo(i,6);ctx.stroke();}}else if(type==='farm'){for(let i=-8;i<10;i+=4){ctx.strokeStyle='#c9b76c';ctx.beginPath();ctx.moveTo(-12,i);ctx.lineTo(10,i-10);ctx.stroke();}}}else{const h=(type==='office'?45:type==='largeFactory'?25:20)+(level-1)*9;box(0,8,19,18,h,colors[t.category]||'#c3cba3');if(['coal','factory','largeFactory'].includes(type))box(8,-12,4,4,25,'#898779');if(['supermarket','mall'].includes(type)){poly([[0,8],[22,-3],[30,2],[8,13]],'#8f9891');ctx.strokeStyle='#eee9d5';for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(5+i*6,7-i*3);ctx.lineTo(11+i*6,10-i*3);ctx.stroke();}}ctx.fillStyle=type==='hospital'?'#b35d51':'#38574b';ctx.font='bold 12px sans-serif';ctx.textAlign='center';drawIcon(ctx,type,-8,-h-5,14,isNight?'#d7dee9':'#3f3f46');if(isNight){ctx.fillStyle='#f6d88c';ctx.fillRect(-11,-h+10,4,5);ctx.fillRect(-5,-h+13,3,5);}}ctx.fillStyle=paint('#264e3b');ctx.beginPath();ctx.arc(17,9,7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(level,17,12);ctx.restore();}
+function renderConstruction(announce=true){
+ const projects=[...state.projects].sort((a,b)=>a.finish-b.finish);
+ if(announce){const current=new Set(projects.map(constructionKey)),finished=[...previousProjects].filter(([key])=>!current.has(key));if(finished.length&&!state.gameOver)message(finished.length===1?'Chantier terminé · '+buildingName(finished[0][1].type):`${finished.length} chantiers terminés.`,'success');previousProjects=new Map(projects.map(p=>[constructionKey(p),p]));}
+ const bar=$('construction-status');bar.hidden=!projects.length||Boolean(state.gameOver);if(bar.hidden)return;
+ const first=projects[0],progress=constructionProgress(first,Date.now());
+ $('construction-name').textContent=buildingName(first.type)+(first.level>1?' · amélioration':'');$('construction-time').textContent=progress.seconds?progress.seconds+' s':'Livraison…';$('construction-percent').textContent=progress.percent+' %';$('construction-count').textContent=projects.length>1?`+${projects.length-1} chantier${projects.length>2?'s':''} · Voir tout`:'Voir le chantier';
+ $('construction-fill').style.transform=`scaleX(${progress.percent/100})`;$('construction-track').setAttribute('aria-valuenow',String(progress.percent));$('construction-track').setAttribute('aria-valuetext',`${progress.percent} %, ${progress.seconds} secondes restantes`);$('construction-open').setAttribute('aria-label',`${buildingName(first.type)} : ${progress.percent} %. Voir les ${projects.length} chantier(s)`);
+}
 function renderAdmin(st){
  $('services').innerHTML=Object.entries({admin:'Mairie',fire:'Pompiers',police:'Police',ambulance:'Ambulances',health:'Hôpital'}).map(([key,label])=>`<div><span class="service-label">${iconMarkup(key==='admin'?'townhall':key==='health'?'hospital':key)}${label}</span><span class="service-result"><b>${st.coverage[key]} %</b>${statusBadge(coverageStatus(st.coverage[key]))}</span></div>`).join('');
  $('utilities').innerHTML=`Énergie : ${Math.round(st.energyRatio*100)} % ${statusBadge(energyStatus(st.energyRatio))} · Pollution : ${st.pollution}.`;
@@ -192,7 +205,7 @@ function renderAdmin(st){
  $('projects-title').textContent=`Chantiers · ${state.projects.length} / ${st.capacity}`;
  $('projects').replaceChildren();
  if(!state.projects.length){const p=document.createElement('p');p.textContent='Aucun chantier.';$('projects').append(p);}
- for(const p of state.projects){const line=document.createElement('p');line.textContent=`${buildingName(p.type)} · niv. ${p.level} · ${Math.max(0,Math.ceil((p.finish-state.last)/1000))} s`;$('projects').append(line);}
+ for(const p of state.projects){const line=document.createElement('p');const progress=constructionProgress(p,state.last);const label=document.createElement('span');label.textContent=`${buildingName(p.type)} · niveau ${p.level} · ${progress.seconds} s`;const track=document.createElement('span');track.className='project-track';track.setAttribute('role','progressbar');track.setAttribute('aria-label',buildingName(p.type));track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(progress.percent));const fill=document.createElement('i');fill.style.width=progress.percent+'%';track.append(fill);line.append(label,track);$('projects').append(line);}
  const buildNeeds=projectCost(selectedType(),1,state);
  for(const key of Object.keys(RESOURCES)){
   $('stock-'+key).textContent=tonnes(state.resources[key]);
@@ -233,12 +246,13 @@ function renderBank(st){
  for(const item of document.querySelectorAll('[data-loan-amount]')){const quote=loanQuote(state,Number(item.dataset.loanAmount));item.querySelector('.loan-payment').textContent=`${money(quote.payment)}/min au départ · ${quote.duration} min`;item.querySelector('.loan-reason').textContent=quote.reason||'Prêt disponible';item.querySelector('button').disabled=!quote.approved;}
  const repay=Math.max(0,Math.min(state.money,st.debt));$('repay-info').textContent=`Remboursement anticipé possible : ${money(repay)}.`;$('repay-debt').disabled=Boolean(state.gameOver)||repay<=0;
 }
+$('construction-open').onclick=()=>{openSheet('city-sheet');$('projects-title').scrollIntoView({block:'start'});};
 $('settings').onclick=()=>openSheet('settings-sheet');
 $('city-name').value=state.cityName;
 $('city-name-form').onsubmit=e=>{e.preventDefault();const err=renameCity(state,$('city-name').value);if(!err)$('city-name').value=state.cityName;message(err||'Ville renommée.',err?'danger':'success');save();update();};
 $('open-bank').onclick=()=>openSheet('bank-sheet');
 $('repay-debt').onclick=()=>{const err=repayDebt(state,Math.max(0,Math.min(state.money,stats(state).debt)));message(err||'Dette remboursée.',err?'danger':'success');save();update();};
-function applyCityState(next){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=next;guideTarget=null;lastTutorialStep=state.tutorial.step;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Logements';$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();}
+function applyCityState(next){for(const d of document.querySelectorAll('dialog[open]'))d.close();state=next;guideTarget=null;lastTutorialStep=state.tutorial.step;$('city-name').value=state.cityName;selected=null;inspected=null;selectedLand=null;pan={x:0,y:0};offerKey='';category='Résidence';searchQuery='';searchAcross=false;$('catalog-search').value='';$('clear-search').hidden=true;previousProjects=new Map(state.projects.map(p=>[constructionKey(p),p]));$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));$('placement').hidden=true;renderCatalog();}
 function restartGame(){applyCityState(initial());save();update();resize();message('Ville recommencée. Les autres villes sont conservées.','success');}
 function setSyncStatus(text,status='neutral'){cloudStatus=text;cloudKind=status;if($('cities-sync'))statusNote('cities-sync',text,status);}
 function renderCities(){
@@ -286,13 +300,15 @@ function renderTutorial(){
  $('guide-action').disabled=Boolean(pending);$('guide-action').textContent=pending?`Travaux · ${Math.max(0,Math.ceil((pending.finish-state.last)/1000))} s`:step.upgrade?'Améliorer une maison':step.type?'Placer '+buildingName(step.type).toLowerCase()+' · '+money(projectCost(step.type,1,state).money,true):'Voir les revenus';
  guideTarget=step.type&&!step.upgrade&&selected===step.type&&!pending?nextGuidePlot():null;
 }
-$('guide-action').onclick=()=>{const step=tutorialStep(state);if(!step)return;if(!step.type){openSheet('city-sheet');return;}if(step.upgrade){const b=state.buildings.find(b=>b.type==='house'&&b.level===1);if(b){inspected=b;$('demolition-confirm').hidden=true;inspect();openSheet('building-sheet');}return;}selected=step.type;category=TYPES[step.type].category;$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));renderCatalog();$('placement').hidden=false;$('placement-label').textContent=buildingName(selected);for(const d of document.querySelectorAll('dialog[open]'))d.close();renderTutorial();if(guideTarget){const p=pos(guideTarget.x,guideTarget.y);pan.x+=W*.5-p.x;pan.y+=H*.45-p.y;}resize();message('Touchez la case en pointillés.');};
+$('guide-action').onclick=()=>{const step=tutorialStep(state);if(!step)return;if(!step.type){openSheet('city-sheet');return;}if(step.upgrade){const b=state.buildings.find(b=>b.type==='house'&&b.level===1);if(b){inspected=b;$('demolition-confirm').hidden=true;inspect();openSheet('building-sheet');}return;}selected=step.type;category=buildingCategories(step.type)[0];searchQuery='';searchAcross=false;$('catalog-search').value='';$('clear-search').hidden=true;$('category-title').textContent=category;for(const button of document.querySelectorAll('[data-category]'))button.setAttribute('aria-pressed',String(button.dataset.category===category));renderCatalog();$('placement').hidden=false;$('placement-label').textContent=buildingName(selected);for(const d of document.querySelectorAll('dialog[open]'))d.close();renderTutorial();if(guideTarget){const p=pos(guideTarget.x,guideTarget.y);pan.x+=W*.5-p.x;pan.y+=H*.45-p.y;}resize();message('Touchez la case en pointillés.');};
 $('skip-tutorial').onclick=()=>{skipTutorial(state);guideTarget=null;save();update();draw();message('Jeu libre.');};
 
 update();
+for(const body of document.querySelectorAll('.sheet-body'))body.addEventListener('scroll',closeTooltips,{passive:true,signal:lifetime.signal});
 document.addEventListener('focusin',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.tile-info,.catalog-tooltip'))closeTooltips();},{signal:lifetime.signal});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.tile-info[aria-expanded=true]')){e.preventDefault();e.stopPropagation();closeTooltips();}},{capture:true,signal:lifetime.signal});
+const progressTicker=setInterval(()=>{if(!changingAccount)renderConstruction(false);},250);
 const cleanupSettings=mountSettings({onSession:changeAccount});
-return ()=>{save();disposed=true;accountGeneration++;citySync?.dispose();cleanupSettings();closeTooltips();lifetime.abort();clearInterval(ticker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
+return ()=>{save();disposed=true;accountGeneration++;citySync?.dispose();cleanupSettings();closeTooltips();lifetime.abort();clearInterval(ticker);clearInterval(progressTicker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
 }

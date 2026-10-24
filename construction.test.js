@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';
+import {initial,build,restore} from './src/engine.js';
+import {constructionProgress,constructionKey} from './src/construction.js';
+const s=initial(1000);assert.equal(build(s,'house',0,0,1000),null);const p=s.projects[0];assert.equal(p.startedAt,1000);assert.equal(p.duration,3000);assert.deepEqual(constructionProgress(p,1000),{percent:0,seconds:3,duration:3000,startedAt:1000});assert.equal(constructionProgress(p,2500).percent,50);assert.equal(constructionProgress(p,5000).percent,100);assert.equal(constructionProgress(p,5000).seconds,0);assert.equal(constructionProgress(p,0).percent,0);const copy=restore(JSON.stringify(s),1000);assert.equal(constructionProgress(copy.projects[0],2500).percent,50);assert.equal(constructionKey(copy.projects[0]),constructionKey(p));assert.ok(Number.isFinite(constructionProgress({type:'house',level:1,finish:16000},8000).percent));
+console.log('Chantiers : début, progression, limites, rechargement et anciens projets OK.');
