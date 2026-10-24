@@ -111,3 +111,13 @@ Le nom de ville se change dans Ville et reste dans la sauvegarde. Dans Réglages
 4. Redémarrer `npm run dev`. Sur Vercel, ajouter les mêmes variables dans les paramètres du projet puis redéployer.
 
 Sans ces variables, le bouton Google est désactivé avec un message de configuration ; aucune fausse connexion n’est simulée. Une fois connecté, le compte et le bouton Déconnexion remplacent le bouton Google. Ne jamais mettre le secret Google ou une clé service_role dans les variables VITE_ : elles sont publiques. L’export et la partie restent locaux ; connecter Google ne synchronise pas encore la ville entre appareils.
+
+## Version 0.8 : nuit et départ guidé
+
+Le thème sombre transforme aussi la carte : eau sombre, terrain et bâtiments nocturnes, fenêtres éclairées. La carte se met à jour immédiatement lors du changement de thème, sans rechargement ni changement économique.
+
+Dans Réglages, **Recommencer à zéro** ouvre une confirmation avant de remplacer la ville par une nouvelle partie. Le compte Google et le thème restent conservés. L’annulation laisse la partie intacte.
+
+Les nouvelles villes commencent avec sept objectifs : deux maisons, solaire, ferme, épicerie, premiers bénéfices et amélioration d’une maison. Un bouton choisit l’action suivante ; une case en pointillés montre où construire. Les prix sont visibles avant placement. Les chantiers guidés prennent 3 secondes, les améliorations guidées 4 secondes, dans la limite des huit premiers projets. Chaque objectif terminé verse une prime unique ; les revenus réels restent calculés par l’économie.
+
+Le guide peut être passé. Après sa fin, les durées et conditions habituelles reviennent. Les villes existantes ne sont ni effacées ni placées de force dans le scénario ; pour tester le nouveau départ, utiliser Réglages → Recommencer à zéro. Voir `docs/DEMARRAGE.md`.

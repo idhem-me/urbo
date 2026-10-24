@@ -33,7 +33,7 @@ Nouvelle construction : coût de base × 1,14 puissance le nombre d’exemplaire
 
 Amélioration au niveau N : coût de base × 1,8 puissance (N − 1). Bois et pierre suivent le même multiplicateur, avec arrondi supérieur. Les coûts affichés dans le catalogue et l’inspecteur sont ceux débités par le moteur.
 
-Durée : 15 secondes de base pour les premiers équipements, 45 secondes pour les types débloqués entre 30 et 79 habitants, 90 secondes pour ceux débloqués à 80 et plus. Multiplier par le carré du niveau cible : une amélioration de maison prend 60 puis 135 secondes, contre 360 puis 810 secondes pour un centre commercial.
+Hors guide de démarrage (voir DEMARRAGE.md), durée : 15 secondes de base pour les premiers équipements, 45 secondes pour les types débloqués entre 30 et 79 habitants, 90 secondes pour ceux débloqués à 80 et plus. Multiplier par le carré du niveau cible : une amélioration de maison prend 60 puis 135 secondes, contre 360 puis 810 secondes pour un centre commercial.
 
 Les capacités augmentent linéairement avec le niveau N. L’entretien devient entretien de base × N × 1,35 puissance (N − 1), arrondi supérieur. Une amélioration apporte plus de capacité par parcelle mais demande plus de services et de recettes pour rester rentable.
 

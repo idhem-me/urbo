@@ -143,3 +143,8 @@ p{margin:10px 0;line-height:1.6}h2{font-size:18px;font-weight:600;margin:0}h3{fo
  --family-industry-background:#302914;--family-industry-border:#5c4c22;--family-industry-text:#fde68a;
  --family-services-background:#351e27;--family-services-border:#65344d;--family-services-text:#fecdd3;
 }
+.dark .game-screen{background:#0b1422}
+.tutorial-card{position:absolute;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 72px);left:50%;transform:translateX(-50%);width:min(400px,calc(100% - 24px));padding:12px 14px 14px;background:var(--background);border:1px solid var(--border);border-radius:9px}
+.tutorial-heading{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted-foreground)}.tutorial-heading button{min-height:28px;height:28px;width:28px}.tutorial-heading svg{width:14px;height:14px}.tutorial-card h3{font-size:14px;margin:3px 0 5px}.tutorial-card p{font-size:12px;margin:5px 0}.tutorial-card small{font-size:11px;margin:7px 0 10px}.tutorial-card>button{width:100%;min-height:40px;height:40px;font-size:12px}
+.game-screen[data-guided=true] #toast{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 290px)}
+.game-screen[data-guided=true] .placement{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 246px)}
