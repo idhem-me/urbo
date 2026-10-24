@@ -18,7 +18,7 @@ assert.equal(stockStatus(19,{rate:10}),'danger');
 assert.equal(stockStatus(20,{rate:10}),'warning');
 assert.equal(stockStatus(100,{rate:10}),'success');
 for(const [status,label] of [['success','OK'],['warning','À surveiller'],['danger','Critique']]){
- const markup=statusBadge(status);assert.ok(markup.includes(`<span>${label}</span>`));assert.ok(markup.includes('<svg'));assert.ok(markup.includes(`data-status="${status}"`));
+ const markup=statusBadge(status);assert.ok(markup.includes(`aria-label="${label}"`));assert.ok(!markup.includes(`<span>${label}</span>`));assert.ok(markup.includes('<svg'));assert.ok(markup.includes(`data-status="${status}"`));
 }
 assert.ok(statusBadge('unknown').includes('data-status="neutral"'));
 const css=readFileSync(new URL('./src/style.css',import.meta.url),'utf8');
@@ -32,3 +32,5 @@ for(const status of ['success','warning','danger']){
 }
 assert.ok(css.includes('--destructive:var(--danger)'));
 console.log('États : seuils, stock optionnel, libellés, icônes, tokens et contrastes AA validés.');
+
+assert.ok(statusBadge('warning','Stock < 20 & urgent').includes('Stock &lt; 20 &amp; urgent'));

@@ -40,14 +40,20 @@ export default function App(){
 
   </BottomSheet>
   <BottomSheet id="city-sheet" title="Ville">
-   <div className="city-heading"><span><b id="city-name-display">Ma ville</b> · niveau <b id="level">1</b></span><span id="save" className="muted">Sauvegarde locale</span></div>
-   <form id="city-name-form" className="city-name-form"><label htmlFor="city-name" className="label">Nom de la ville</label><div><input id="city-name" name="cityName" type="text" maxLength={80} placeholder="Ma ville" autoComplete="off"/><Button type="submit">Enregistrer</Button></div></form><div className="indicators"><div><span className="label">Emplois</span><strong id="jobs"/><small id="employment"/></div><div><span className="label">Attrait</span><strong id="appeal"/><small id="housing"/></div></div>
-   <h3>Impôts</h3><div className="tax-controls"><TaxControl sector="residential" label="Logements"/><TaxControl sector="commerce" label="Commerces"/><TaxControl sector="office" label="Bureaux"/></div><p className="muted">Impôts bas : plus de demande. Impôts hauts : plus de recettes par activité.</p><h3>Budget des services</h3><NativeSelect id="service-budget" defaultValue="normal"><NativeSelectOption value="low">Réduit · 60 % du coût · 65 % de capacité</NativeSelectOption><NativeSelectOption value="normal">Normal · 100 % du coût et de la capacité</NativeSelectOption><NativeSelectOption value="high">Renforcé · 140 % du coût · 135 % de capacité</NativeSelectOption></NativeSelect><h3>État de la ville</h3><div id="city-status"/><h3>Budget</h3><p id="economy"/><p id="advice" className="status-note"/>
-   <h3>Banque</h3><p id="bank-summary"/><Button id="open-bank"><Icon name="townhall"/>Banque</Button><h3>Services</h3><div id="services" className="metrics"/>
-   <h3>Énergie et écoles</h3><p id="utilities"/><p id="education"/>
-   <h3 id="projects-title">Chantiers</h3><div id="projects"/>
-   <h3>Terrain</h3><p id="progression"/><p id="territory"/>
-   <p className="muted">Budget : € · stocks : t · production : t/min.</p>
+   <div className="city-heading"><div><b id="city-name-display">Ma ville</b><span className="label">Niveau <b id="level">1</b></span></div><Button data-open-sheet="cities-sheet" variant="outline" size="sm">Mes villes</Button></div>
+   <p id="save" className="muted city-save">Sauvegarde locale</p>
+   <section className="city-section city-overview" aria-label="Vue d’ensemble">
+    <div className="indicators"><div><span className="label">Emplois occupés</span><strong id="jobs"/><small id="employment"/></div><div><span className="label">Attrait</span><strong id="appeal"/><small id="housing"/></div></div>
+    <p id="advice" className="status-note"/><div id="city-status"/>
+   </section>
+   <section className="city-section"><h3>Finances</h3><p className="label">Par minute</p><div id="economy" className="finance-breakdown"/>
+    <details className="city-details"><summary>Impôts et services</summary><div className="city-detail-body"><div className="tax-controls"><TaxControl sector="residential" label="Logements"/><TaxControl sector="commerce" label="Commerces"/><TaxControl sector="office" label="Bureaux"/></div><p className="muted">Moins d’impôts attire plus d’habitants et d’entreprises.</p><label htmlFor="service-budget" className="label">Budget des services</label><NativeSelect id="service-budget" defaultValue="normal"><NativeSelectOption value="low">Réduit · capacité 65 % · coût 60 %</NativeSelectOption><NativeSelectOption value="normal">Normal · capacité et coût 100 %</NativeSelectOption><NativeSelectOption value="high">Renforcé · capacité 135 % · coût 140 %</NativeSelectOption></NativeSelect></div></details>
+    <div className="city-bank"><div><b>Banque</b><p id="bank-summary"/></div><Button id="open-bank" variant="outline">Voir</Button></div>
+   </section>
+   <section className="city-section"><h3 id="projects-title">Chantiers</h3><div id="projects"/></section>
+   <details className="city-details city-section"><summary>Services et population</summary><div className="city-detail-body"><div id="services" className="metrics"/><p id="utilities"/><p id="education"/></div></details>
+   <details className="city-details city-section"><summary>Terrain et niveau</summary><div className="city-detail-body"><p id="progression"/><p id="territory"/></div></details>
+   <details className="city-details city-section"><summary>Nom de la ville</summary><form id="city-name-form" className="city-name-form city-detail-body"><label htmlFor="city-name" className="label">Nom</label><div><input id="city-name" name="cityName" type="text" maxLength={80} placeholder="Ma ville" autoComplete="off"/><Button type="submit">Enregistrer</Button></div></form></details>
 
   </BottomSheet>
   <BottomSheet id="stock-sheet" title="Stocks">

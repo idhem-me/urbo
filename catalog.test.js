@@ -17,3 +17,5 @@ assert.deepEqual(searchCatalog('Industrie','usine grande'),['largeFactory']);
 assert.deepEqual(searchCatalog('Services','inexistant'),[]);
 
 assert.equal(new Set(PRIMARY_CATEGORIES.flatMap(category=>searchCatalog(category))).size,27);
+
+assert.equal(money(0),'0 €');assert.equal(money(100),'0,1 k€');assert.equal(money(1),'0,001 k€');assert.equal(money(-150),'−0,15 k€'.replace('−','-'));assert.equal(money(80000),'80 k€');assert.equal(money(1e6),'1 M€');assert.equal(money(0.1),'< 0,001 k€');

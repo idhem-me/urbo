@@ -8,9 +8,11 @@ import {mountSettings} from './settings';
 import {constructionProgress,constructionKey} from './construction';
 import {sceneColor} from './scene';
 import {money,tonnes} from './units';
+import {mountStatusTooltips} from './status-tooltip';
 import {buttonVariants} from './components/ui/button';
 export function mountGame(){
 const lifetime=new AbortController();
+const cleanupStatusTooltips=mountStatusTooltips(lifetime.signal);
 const $=id=>document.getElementById(id),canvas=$('map'),ctx=canvas.getContext('2d');
 let storage;try{storage=localStorage;}catch{}
 let cityStore=new CityStore({storage}),citySync=null,changingAccount=false,accountGeneration=0,disposed=false,cityListKey='',cloudStatus='Sauvegarde sur cet appareil.',cloudKind='neutral';
@@ -59,7 +61,7 @@ function update(){
  $('appeal').textContent=st.attractiveness+' / 100';
  $('housing').textContent=`${st.people} / ${st.homes} places`;
 for(const sector of ['residential','commerce','office'])$('tax-'+sector).value=state.taxes[sector];$('service-budget').value=state.serviceBudget;
- $('economy').textContent=`Par minute : impôts +${money(st.taxes)} · activités +${money(st.commerce)} · frais −${money(st.upkeep)} · banque −${money(st.debtService)}.`;
+ $('economy').innerHTML=[['Impôts',st.taxes],['Activités',st.commerce],['Entretien',-st.upkeep],['Remboursements',-st.debtService],['Solde',st.income]].map(([label,value])=>`<div><span>${label}</span><b>${value>0?'+':''}${money(value)}</b></div>`).join('');
  statusNote('advice',st.income<0?'Dépenses trop élevées.':st.unemployment>0?'Ajoutez des emplois.':st.jobs>st.workers?'Il manque des habitants.':'Emplois équilibrés.',st.income<0?'danger':st.unemployment>0||st.jobs>st.workers?'warning':'success');
  renderAdmin(st);inspect();landInspect();
  $('level').textContent=pg.index+1;
@@ -191,7 +193,7 @@ $('confirm-demolish').onclick=()=>{if(!inspected)return;const err=demolish(state
 $('cancel-placement').onclick=()=>{selected=null;$('placement').hidden=true;message('Construction annulée.');renderCatalog();update();};
 for(const input of document.querySelectorAll('[data-tax-sector]'))input.onchange=e=>{setSectorTax(state,input.dataset.taxSector,e.target.value);save();update();message('Impôts modifiés.','success');};$('service-budget').onchange=e=>{setServiceBudget(state,e.target.value);save();update();draw();message('Budget des services modifié.','success');};
 $('resources').replaceChildren();
-for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);const indicator=document.createElement('span');indicator.id='stock-status-'+key;indicator.className='stock-indicator';row.append(indicator);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',err?'danger':'success');save();update();};row.append(button);}$('resources').append(row);}
+for(const [key,label] of Object.entries(RESOURCES)){const row=document.createElement('div');const text=document.createElement('span');text.innerHTML=`${iconMarkup(({timber:'sawmill',stone:'quarry',coal:'coal',oil:'oil',food:'farm',goods:'stock'})[key])}${label} : <b id="stock-${key}">0</b>`;row.append(text);const indicator=document.createElement('span');indicator.id='stock-status-'+key;indicator.className='stock-indicator';text.append(indicator);for(const direction of ['buy','sell']){const button=document.createElement('button');button.className=buttonVariants({variant:'outline',size:'sm'});button.textContent=direction==='buy'?`Acheter · ${money(PRICES[key]*TRADE_AMOUNT)}`:`Vendre · ${money(PRICES[key]*TRADE_AMOUNT*.6)}`;button.title=`${TRADE_AMOUNT} t · ${money(PRICES[key]*(direction==='buy'?1:.6))}/t`;button.onclick=()=>{const err=trade(state,key,direction);message(err||'Échange fait.',err?'danger':'success');save();update();};row.append(button);}$('resources').append(row);}
 const themeObserver=new MutationObserver(()=>{const next=document.documentElement.classList.contains('dark');if(next!==isNight){isNight=next;draw();}});themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 const observer=new ResizeObserver(resize);observer.observe(canvas);const ticker=setInterval(()=>{if(changingAccount)return;accrue(state);save();update();draw();},1000);document.addEventListener('visibilitychange',()=>{if(changingAccount)return;accrue(state);save();update();draw();},{signal:lifetime.signal});window.addEventListener('pagehide',save,{signal:lifetime.signal});resize();save();
 
@@ -204,9 +206,11 @@ function renderConstruction(announce=true){
  $('construction-name').textContent=buildingName(first.type)+(first.level>1?' · amélioration':'');$('construction-time').textContent=progress.seconds?progress.seconds+' s':'Livraison…';$('construction-percent').textContent=progress.percent+' %';$('construction-count').textContent=projects.length>1?`+${projects.length-1} chantier${projects.length>2?'s':''} · Voir tout`:'Voir le chantier';
  $('construction-fill').style.transform=`scaleX(${progress.percent/100})`;$('construction-track').setAttribute('aria-valuenow',String(progress.percent));$('construction-track').setAttribute('aria-valuetext',`${progress.percent} %, ${progress.seconds} secondes restantes`);$('construction-open').setAttribute('aria-label',`${buildingName(first.type)} : ${progress.percent} %. Voir les ${projects.length} chantier(s)`);
 }
+const renderedStatusHTML=new Map();
+function replaceStatusHTML(id,html){if(renderedStatusHTML.get(id)!==html){$(id).innerHTML=html;renderedStatusHTML.set(id,html);}}
 function renderAdmin(st){
- $('services').innerHTML=Object.entries({admin:'Mairie',fire:'Pompiers',police:'Police',ambulance:'Ambulances',health:'Hôpital'}).map(([key,label])=>`<div><span class="service-label">${iconMarkup(key==='admin'?'townhall':key==='health'?'hospital':key)}${label}</span><span class="service-result"><b>${st.coverage[key]} %</b>${statusBadge(coverageStatus(st.coverage[key]))}</span></div>`).join('');
- $('utilities').innerHTML=`Énergie : ${Math.round(st.energyRatio*100)} % ${statusBadge(energyStatus(st.energyRatio))} · Pollution : ${st.pollution}.`;
+ replaceStatusHTML('services',Object.entries({admin:'Mairie',fire:'Pompiers',police:'Police',ambulance:'Ambulances',health:'Hôpital'}).map(([key,label])=>`<div><span class="service-label">${iconMarkup(key==='admin'?'townhall':key==='health'?'hospital':key)}${label}</span><span class="service-result"><b>${st.coverage[key]} %</b>${statusBadge(coverageStatus(st.coverage[key]),`${label} : ${st.coverage[key]} % des besoins couverts.`)}</span></div>`).join(''));
+ replaceStatusHTML('utilities',`Énergie : ${Math.round(st.energyRatio*100)} % ${statusBadge(energyStatus(st.energyRatio),`Énergie : ${Math.round(st.energyRatio*100)} % des besoins couverts.`)} · Pollution : ${st.pollution}.`);
  $('education').textContent=`${st.educated} actifs formés. ${st.officeEmployed} / ${st.educatedJobs} emplois qualifiés occupés. Nourriture : ${st.foodCovered?'disponible':'épuisée'}.`;
  $('projects-title').textContent=`Chantiers · ${state.projects.length} / ${st.capacity}`;
  $('projects').replaceChildren();
@@ -217,9 +221,11 @@ function renderAdmin(st){
   $('stock-'+key).textContent=tonnes(state.resources[key]);
   const rate=key==='food'?st.foodNeed:state.buildings.reduce((total,b)=>total+(effects(b).consume[key]||0)*Math.max(st.productivity,.1),0);
   const needed=['timber','stone'].includes(key)?buildNeeds[key]:0;
-  $('stock-status-'+key).innerHTML=statusBadge(stockStatus(state.resources[key],{needed,rate}));
+  const status=stockStatus(state.resources[key],{needed,rate});
+  const description=status==='danger'?`${RESOURCES[key]} : stock insuffisant.${needed?` Il faut ${tonnes(needed)} pour le bâtiment choisi.`:''}${rate>0?` Consommation : ${tonnes(rate)}/min.`:''}`:status==='warning'?`${RESOURCES[key]} : réserve faible.${rate>0?` Environ ${Math.floor(state.resources[key]/rate)} min de consommation.`:' Prévoyez du stock pour les prochains chantiers.'}`:`${RESOURCES[key]} : aucun besoin actuel.`;
+  const indicator=$('stock-status-'+key),markup=status==='success'?'':statusBadge(status,description);replaceStatusHTML(indicator.id,markup);
  }
- $('city-status').innerHTML=[['Budget',budgetStatus(state.money,st.income)],['Solde / min',incomeStatus(st.income)],['Énergie',energyStatus(st.energyRatio)],['Attrait',st.attractiveness>=65?'success':st.attractiveness>=40?'warning':'danger']].map(([label,status])=>`<div class="status-row"><span>${label}</span>${statusBadge(status)}</div>`).join('');
+ replaceStatusHTML('city-status',[['Budget',budgetStatus(state.money,st.income)],['Solde / min',incomeStatus(st.income)],['Énergie',energyStatus(st.energyRatio)],['Attrait',st.attractiveness>=65?'success':st.attractiveness>=40?'warning':'danger']].map(([label,status])=>`<div class="status-row"><span>${label}</span>${statusBadge(status,label+' : '+STATUS[status].label)}</div>`).join(''));
 }
 function landInspect(){
  const p=selectedLand;
@@ -316,5 +322,5 @@ document.addEventListener('pointerdown',e=>{if(!e.target.closest('.tile-info,.ca
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.tile-info[aria-expanded=true]')){e.preventDefault();e.stopPropagation();closeTooltips();}},{capture:true,signal:lifetime.signal});
 const progressTicker=setInterval(()=>{if(!changingAccount)renderConstruction(false);},250);
 const cleanupSettings=mountSettings({onSession:changeAccount});
-return ()=>{save();disposed=true;accountGeneration++;citySync?.dispose();cleanupSettings();closeTooltips();lifetime.abort();clearInterval(ticker);clearInterval(progressTicker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
+return ()=>{save();disposed=true;accountGeneration++;citySync?.dispose();cleanupSettings();cleanupStatusTooltips();closeTooltips();lifetime.abort();clearInterval(ticker);clearInterval(progressTicker);clearTimeout(toastTimer);observer.disconnect();themeObserver.disconnect();for(const d of document.querySelectorAll('dialog[open]'))d.close();};
 }

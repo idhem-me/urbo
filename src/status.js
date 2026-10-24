@@ -15,4 +15,8 @@ export function stockStatus(amount,{needed=0,rate=0}={}){
  if(amount<needed*2||(rate>0&&amount/rate<10))return 'warning';
  return 'success';
 }
-export function statusBadge(status){status=Object.hasOwn(STATUS,status)?status:'neutral';const config=STATUS[status];return `<span class="status-badge" data-status="${STATUS[status]?status:'neutral'}">${iconMarkup(config.icon)}<span>${config.label}</span></span>`;}
+const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+export function statusBadge(status,description){
+ status=Object.hasOwn(STATUS,status)?status:'neutral';const config=STATUS[status],label=escape(description||config.label);
+ return `<button type="button" class="status-badge status-icon" data-status="${status}" data-status-tip="${label}" aria-label="${label}" aria-expanded="false">${iconMarkup(config.icon)}</button>`;
+}
